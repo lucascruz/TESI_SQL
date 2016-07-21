@@ -42,7 +42,7 @@ public class Conexao {
 	
 	public ResultSet consulte(String sqlQuery){
 	try {
-		smt.executeQuery("select * from curso;");
+		smt= con.createStatement();
 		return smt.executeQuery(sqlQuery);
 	} catch (SQLException sqle) {
 		System.out.printf("Erro: #%d [%s]\n", sqle.getErrorCode(), sqle.getMessage());
