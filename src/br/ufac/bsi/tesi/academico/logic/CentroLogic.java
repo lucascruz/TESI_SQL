@@ -27,6 +27,7 @@ public class CentroLogic {
 		return cdb.addCentro(centro);
 	}
 	
+	@SuppressWarnings("null")
 	public boolean updCentro(String sigla, String nome){
 		Centro centro = null;
 		
