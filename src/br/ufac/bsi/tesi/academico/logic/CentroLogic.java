@@ -70,6 +70,7 @@ public class CentroLogic {
 			centro = cdb.getCentro(sigla);
 
 		return centro;
-	}	
+	}
+
 	
 }

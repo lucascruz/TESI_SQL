@@ -8,7 +8,7 @@ import br.ufac.bsi.tesi.academico.logic.*;
 public class CentroUI {
 	// Classe ConexaoApp
 
-	private static final String urlDB = "jdbc:mysql://localhost/academico";
+	private static final String urlDB = "jdbc:mysql://localhost/academico?useSSL=false";
 	private static Conexao cnx =  new Conexao();
 	private static Scanner leitor = new Scanner(System.in);
 	private static CentroLogic cl = new CentroLogic();
@@ -36,7 +36,8 @@ public class CentroUI {
 				System.out.println("2 - Editar");
 				System.out.println("3 - Excluir");
 				System.out.println("4 - Consultar");
-				System.out.println("5 - Sair");			
+				System.out.println("5 - Listar");		
+				System.out.println("6 - Sair");
 				System.out.print("Informe sua opção: ");
 				opcao = Integer.parseInt(leitor.nextLine());				
 				
@@ -58,6 +59,10 @@ public class CentroUI {
 	} //Fim do método main
 
 	private static void listar() {
+		
+		
+		
+		
 		// TODO Auto-generated method stub
 		// este método deve listar todos os centros cadastrados.
 		// por ser da camada de interface/apresentação, ele
@@ -96,7 +101,35 @@ public class CentroUI {
 		// novo nome para ele, para então,
 		// solicitar à camada de persistência
 		
-	}		
+		Centro centro = null;
+		
+		String strSigla, strNome;
+		System.out.println("Consultando Centro");
+		System.out.print("Sigla: ");
+		strSigla = leitor.nextLine();
+
+		centro = cl.getCentro(strSigla);
+		
+		if (centro != null){
+			System.out.println("Centro Localizado");
+			System.out.printf("Sigla: %s\n", centro.getSigla() );
+			System.out.printf("Nome: %s\n", centro.getNome() );	
+			System.out.printf("Novo nome: \n");
+			strNome = leitor.nextLine();
+			if (cl.updCentro(strSigla, strNome))
+					cl.addCentro(strSigla, strNome);
+					System.out.println("Centro atualizado com sucesso!");
+		
+		}else
+			System.out.println("Falha ao consultar o Centro!");
+		
+	}
+		
+		
+		
+		
+		
+		
 	
 	private static void excluir() {
 		// TODO Auto-generated method stub
@@ -105,8 +138,28 @@ public class CentroUI {
 		// se ele existir, deve solicitar o 
 		// a confirmacao do usuário, para então,
 		// solicitar à camada de persistência
+		
+		Centro centro = null;
+		
+		String strSigla;
+		System.out.println("Consultando Centro");
+		System.out.print("Sigla: ");
+		strSigla = leitor.nextLine();
 
+		centro = cl.getCentro(strSigla);
+		
+		if (centro != null){
+			System.out.println("Centro Localizado");
+			System.out.printf("Sigla: %s\n", centro.getSigla() );
+			System.out.printf("Nome: %s\n", centro.getNome() );
+		//	if(cl.delCentro(strSigla, centro.getNome()))
+				
+		}else
+			System.out.println("Falha ao consultar o Centro!");
+		
 	}
+
+	
 
 	private static void consultar() {
 		

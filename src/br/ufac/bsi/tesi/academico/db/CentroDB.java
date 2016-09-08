@@ -31,12 +31,14 @@ public class CentroDB {
 	}
 	
 	public boolean delCentro(Centro centro){
-		String strExcluir = "DELETE FROM centro "
+		String strExcluir = "DELETE CASCADE FROM centro "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
 		
 		return (conexao.atualize(strExcluir)>0);
 
 	}
+	
+
 	
 	public Centro getCentro(String sigla){
 	
