@@ -1,51 +1,50 @@
 package br.ufac.bsi.tesi.academico.logic;
 
-public class Professor {
-
-	private String sigla;
-	private String nome, endereco;
-	private int rg, cpf, fone, matricula;
-
+public class Professor{
+	private String nome, endereco, cpf, fone;
+	private String centro_sigla, matricula, rg;
+	
+	public String getMatricula() {
+		return matricula;
+	}
+	public void setMatricula(String matricula2) {
+		this.matricula = matricula2;
+	}
+	public String getRg() {
+		return rg;
+	}
+	public void setRg(String rg) {
+		this.rg = rg;
+	}
+	public String getCpf() {
+		return cpf;
+	}
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	public String getFone() {
+		return fone;
+	}
+	public void setFone(String fone) {
+		this.fone = fone;
+	}
 	public String getEndereco() {
 		return endereco;
 	}
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
-	public int getRg() {
-		return rg;
-	}
-	public void setRg(int rg) {
-		this.rg = rg;
-	}
-	public int getCpf() {
-		return cpf;
-	}
-	public void setCpf(int cpf) {
-		this.cpf = cpf;
-	}
-	public int getFone() {
-		return fone;
-	}
-	public void setFone(int fone) {
-		this.fone = fone;
-	}
-	public int getMatricula() {
-		return matricula;
-	}
-	public void setMatricula(int matricula) {
-		this.matricula = matricula;
-	}
-	public String getSigla() {
-		return sigla;
-	}
 	public String getNome() {
 		return nome;
-	}
-	public void setSigla(String sigla) {
-		this.sigla = sigla;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+	public String getCentro_sigla() {
+		return centro_sigla;
+	}
+	public void setCentro_sigla(String centro_sigla) {
+		this.centro_sigla = centro_sigla;
+	}
+
 }

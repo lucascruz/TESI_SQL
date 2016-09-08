@@ -2,84 +2,77 @@ package br.ufac.bsi.tesi.academico.logic;
 
 import java.util.ArrayList;
 
-import br.ufac.bsi.tesi.academico.db.*;
+import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.db.DisciplinaDB;
 
 public class DisciplinaLogic {
-
-	private DisciplinaDB ddb = new DisciplinaDB();
+private DisciplinaDB cdb = new DisciplinaDB();
 	
 	public void setConexao(Conexao conexao){
-		ddb.setConexao(conexao);
+		cdb.setConexao(conexao);
 	}
 
-	public boolean addDisciplina(String nome, String codigo_curso){
+	public boolean addDisciplina(String nome, String codigo, String ch){
 		Disciplina disciplina = null;
 		
-		if (codigo_curso.isEmpty() || nome.isEmpty())
+		if (nome.isEmpty() || codigo.isEmpty()|| ch.isEmpty())
 			return false;
-
-		if (!codigo_curso.isEmpty())
-			disciplina = ddb.getDisciplina(codigo_curso);
+		
+		if (!codigo.isEmpty())
+			disciplina = cdb.getDisciplina(codigo);
 
 		if (disciplina != null)
 			return false;
-		else{
+		else
 			disciplina = new Disciplina();
-			disciplina.setCodigo_curso(codigo_curso);
-			disciplina.setNome(nome);
-			return ddb.addDisciplina(disciplina);
-		}
-
+			disciplina.setCodigo(codigo); disciplina.setNome(nome); disciplina.setCh(ch);
+			return cdb.addDisciplina(disciplina);
 	}
-
-	public boolean updDisciplina(String codigo_curso, String nome){
+	public boolean updDisciplina(String nome, String codigo, String ch){
 		Disciplina disciplina = null;
 		
-		if (codigo_curso.isEmpty() || nome.isEmpty())
+		if (nome.isEmpty() || codigo.isEmpty()|| ch.isEmpty())
 			return false;
-
-		if (!codigo_curso.isEmpty())
-			disciplina = ddb.getDisciplina(codigo_curso);
+		
+		if (!codigo.isEmpty())
+			disciplina = cdb.getDisciplina(codigo);
 
 		if (disciplina == null)
 			return false;
 		else{
-			disciplina.setNome(nome);			
-			return ddb.updDisciplina(disciplina);
+			disciplina.setNome(nome);
+			disciplina.setCh(ch);
+			return cdb.updDisciplina(disciplina);
 		}
 
 	}
 
-	public boolean delDisciplina(String codigo_curso, String nome){
+	public boolean delDisciplina(String nome, String codigo, String ch){
 		Disciplina disciplina = null;
 		
-		if (codigo_curso.isEmpty() || nome.isEmpty())
+		if (nome.isEmpty() || codigo.isEmpty()|| ch.isEmpty())
 			return false;
-
-		if (!codigo_curso.isEmpty())
-			disciplina = ddb.getDisciplina(codigo_curso);
+		
+		if (!codigo.isEmpty())
+			disciplina = cdb.getDisciplina(codigo);
 
 		if (disciplina == null)
 			return false;
 		else
-			return ddb.delDisciplina(disciplina);
+			return cdb.delDisciplina(disciplina);
 	}
 
-	public Disciplina getDisciplina(String codigo_curso){
+	public Disciplina getDisciplina(String codigo){
 		Disciplina disciplina = null;
 		
-		if (!codigo_curso.isEmpty())
-			disciplina = ddb.getDisciplina(codigo_curso);
+		if (!codigo.isEmpty())
+			disciplina = cdb.getDisciplina(codigo);
 
 		return disciplina;
 	}
 
-
-	public ArrayList<Disciplina> lstDisciplinas() {
-		ArrayList<Disciplina> disciplinas = ddb.getTodosDisciplinas();
-		return disciplinas;
-	}
-
-
-	
+	public ArrayList<Disciplina> lstDisciplina() {
+		ArrayList<Disciplina> disciplina = cdb.getTodasDisciplinas();
+		return disciplina;
+	}		
 }

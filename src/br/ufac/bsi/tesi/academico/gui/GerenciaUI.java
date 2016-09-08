@@ -25,8 +25,10 @@ public class GerenciaUI {
 		System.out.print("Senha: ");
 		senha = leitor.nextLine();
 
+
 		if (cnx.conecte(urlDB, usuario, senha)){
 			cl.setConexao(cnx);
+			
 	
 			do{
 				System.out.println("PAINEL DE CONTROLE - ADMINISTRACAO");
@@ -39,18 +41,32 @@ public class GerenciaUI {
 				System.out.print("Informe sua opção: ");
 				opcao = Integer.parseInt(leitor.nextLine());				
 				
-				switch  (opcao){
-				
-					case 1 : professor(); break;
-					case 2 : aluno(); break;
-					case 3 : disciplina(); break;					
-					case 4 : curso(); break;
-					case 5 : centro(); break;
-					case 6 : break;
-					default : System.out.println("Opção inválida!");
+				switch (opcao) {
+
+				case 1:
+					ProfessorUI.main(args, cnx);
+					break;
+				case 2:
+					AlunoUI.main(args, cnx);
+					break;
+				case 3:
+					DisciplinaUI.main(args, cnx);
+					break;
+				case 4:
+					CursoUI.main(args, cnx);
+					break;
+				case 5:
+					CentroUI.main(args, cnx);
+					break;
+				case 6:
+					break;
+				default:
+					System.out.println("Opção inválida!");
 				}
 			} while(opcao != 6);	
 		}
+		
+		
 		leitor.close();
 		cnx.desconecte();			
 
