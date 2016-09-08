@@ -1,5 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
+import java.util.ArrayList;
+
 import br.ufac.bsi.tesi.academico.db.*;
 
 public class AlunoLogic {
@@ -75,6 +77,11 @@ public class AlunoLogic {
 
 		return aluno;
 	}
+	public ArrayList<Aluno> lstAlunos() {
+		ArrayList<Aluno> alunos = aldb.getTodosAlunos();
+		return alunos;
+	}
+
 
 	
 }

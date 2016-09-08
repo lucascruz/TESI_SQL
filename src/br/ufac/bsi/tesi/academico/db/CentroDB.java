@@ -2,6 +2,9 @@ package br.ufac.bsi.tesi.academico.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.mysql.jdbc.ResultSetMetaData;
 
 import br.ufac.bsi.tesi.academico.logic.Centro;
 
@@ -66,6 +69,36 @@ public class CentroDB {
 			}
 		}
 		return centro;
+	}
+	
+	public ArrayList<Centro>getTodosCentros(){
+		ArrayList<Centro>centros = new ArrayList<Centro>();
+		ResultSet rs = conexao.consulte("SELECT * FROM centro;");
+		ResultSetMetaData rsrs;
+		Centro centro =null;
+		
+		if(rs != null){
+			try{
+				centro = new Centro();
+				rsrs = (ResultSetMetaData) rs.getMetaData();
+				centro.setSigla(rsrs.getColumnLabel(1).toUpperCase());
+				centro.setNome(rsrs.getColumnLabel(2).toUpperCase());
+				centros.add(centro);
+				while (rs.next()){
+					centro = new Centro();
+					centro.setSigla(rs.getString(1));
+					centro.setNome(rs.getString(2));
+					centros.add(centro);
+					
+				}
+			}
+			catch(SQLException sqle){
+				System.out.printf("Erro: #%d [%s]\n", 
+						sqle.getErrorCode(), sqle.getMessage());
+			}
+			
+		}
+		return centros;
 	}
 	
 }

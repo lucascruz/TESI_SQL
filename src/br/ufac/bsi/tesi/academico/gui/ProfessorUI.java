@@ -5,13 +5,13 @@ import java.util.*;
 import br.ufac.bsi.tesi.academico.db.*;
 import br.ufac.bsi.tesi.academico.logic.*;
 
-public class CentroUI {
+public class ProfessorUI {
 	// Classe ConexaoApp
 
 	private static final String urlDB = "jdbc:mysql://localhost/academico?useSSL=false";
 	private static Conexao cnx =  new Conexao();
 	private static Scanner leitor = new Scanner(System.in);
-	private static CentroLogic cl = new CentroLogic();
+	private static ProfessorLogic cl = new ProfessorLogic();
 
 	// Método main inicia execução do aplicativo
 	public static void main(String args[]){
@@ -31,7 +31,7 @@ public class CentroUI {
 			cl.setConexao(cnx);
 	
 			do{
-				System.out.println("Cadastro de Centro");
+				System.out.println("Cadastro de Professor");
 				System.out.println("1 - Incluir");			
 				System.out.println("2 - Editar");
 				System.out.println("3 - Excluir");
@@ -58,50 +58,52 @@ public class CentroUI {
 
 	} //Fim do método main
 
+
+
 	private static void incluir() {
 		String strSigla, strNome;
-		System.out.println("Incluindo Centro");
-		System.out.print("Sigla: ");
+		System.out.println("Incluindo Professor");
+		System.out.print("Matricula: ");
 		strSigla = leitor.nextLine();
 		System.out.print("Nome: ");
 		strNome = leitor.nextLine();
 
-		if (cl.addCentro(strSigla, strNome))
-			System.out.println("Centro incluído com sucesso!");
+		if (cl.addProfessor(strSigla, strNome))
+			System.out.println("Professor incluído com sucesso!");
 		else
-			System.out.println("Falha ao incluir o Centro!");
+			System.out.println("Falha ao incluir o Professor!");
 		
 	}
 
 	private static void editar() {
 		// TODO Auto-generated method stub
 		// baseia-se no consultar, porém,
-		// agora depois de mostrar o centro
+		// agora depois de mostrar o professor
 		// se ele existir, deve solicitar o 
 		// novo nome para ele, para então,
 		// solicitar à camada de persistência
 		
-		Centro centro = null;
+		Professor professor = null;
 		
 		String strSigla, strNome;
-		System.out.println("Consultando Centro");
+		System.out.println("Consultando Professor");
 		System.out.print("Sigla: ");
 		strSigla = leitor.nextLine();
 
-		centro = cl.getCentro(strSigla);
+		professor = cl.getProfessor(strSigla);
 		
-		if (centro != null){
-			System.out.println("Centro Localizado");
-			System.out.printf("Sigla: %s\n", centro.getSigla() );
-			System.out.printf("Nome: %s\n", centro.getNome() );	
+		if (professor != null){
+			System.out.println("Professor Localizado");
+			System.out.printf("Sigla: %s\n", professor.getSigla() );
+			System.out.printf("Nome: %s\n", professor.getNome() );	
 			System.out.printf("Novo nome: \n");
 			strNome = leitor.nextLine();
-			if (cl.updCentro(strSigla, strNome))
-					cl.addCentro(strSigla, strNome);
-					System.out.println("Centro atualizado com sucesso!");
+			if (cl.updProfessor(strSigla, strNome))
+					cl.addProfessor(strSigla, strNome);
+					System.out.println("Professor atualizado com sucesso!");
 		
 		}else
-			System.out.println("Falha ao consultar o Centro!");
+			System.out.println("Falha ao consultar o Professor!");
 		
 	}
 		
@@ -114,28 +116,28 @@ public class CentroUI {
 	private static void excluir() {
 		// TODO Auto-generated method stub
 		// baseia-se no consultar, porém,
-		// agora depois de mostrar o centro
+		// agora depois de mostrar o professor
 		// se ele existir, deve solicitar o 
 		// a confirmacao do usuário, para então,
 		// solicitar à camada de persistência
 		
-		Centro centro = null;
+		Professor professor = null;
 		
 		String strSigla;
-		System.out.println("Consultando Centro");
+		System.out.println("Consultando Professor");
 		System.out.print("Sigla: ");
 		strSigla = leitor.nextLine();
 
-		centro = cl.getCentro(strSigla);
+		professor = cl.getProfessor(strSigla);
 		
-		if (centro != null){
-			System.out.println("Centro Localizado");
-			System.out.printf("Sigla: %s\n", centro.getSigla() );
-			System.out.printf("Nome: %s\n", centro.getNome() );
-		//	if(cl.delCentro(strSigla, centro.getNome()))
+		if (professor != null){
+			System.out.println("Professor Localizado");
+			System.out.printf("Sigla: %s\n", professor.getSigla() );
+			System.out.printf("Nome: %s\n", professor.getNome() );
+		//	if(cl.delProfessor(strSigla, professor.getNome()))
 				
 		}else
-			System.out.println("Falha ao consultar o Centro!");
+			System.out.println("Falha ao consultar o Professor!");
 		
 	}
 
@@ -143,29 +145,29 @@ public class CentroUI {
 
 	private static void consultar() {
 		
-		Centro centro = null;
+		Professor professor = null;
 		
 		String strSigla;
-		System.out.println("Consultando Centro");
+		System.out.println("Consultando Professor");
 		System.out.print("Sigla: ");
 		strSigla = leitor.nextLine();
 
-		centro = cl.getCentro(strSigla);
+		professor = cl.getProfessor(strSigla);
 		
-		if (centro != null){
-			System.out.println("Centro Localizado");
-			System.out.printf("Sigla: %s\n", centro.getSigla() );
-			System.out.printf("Nome: %s\n", centro.getNome() );			
+		if (professor != null){
+			System.out.println("Professor Localizado");
+			System.out.printf("Sigla: %s\n", professor.getSigla() );
+			System.out.printf("Nome: %s\n", professor.getNome() );			
 		}else
-			System.out.println("Falha ao consultar o Centro!");
+			System.out.println("Falha ao consultar o Professor!");
 		
 	}
 	
 	private static void listar(){
-		ArrayList<Centro> centros = cl.lstCentros();
-		for (int i = 0; i<centros.size(); i++){
-			System.out.printf("%-8s\t", centros.get(i).getSigla());
-			System.out.printf("%-8s\t", centros.get(i).getSigla());
+		ArrayList<Professor> professor = cl.lstProfessor();
+		for (int i = 0; i<professor.size(); i++){
+			System.out.printf("%-8s\t", professor.get(i).getMatricula());
+			System.out.printf("%-8s\t", professor.get(i).getMatricula());
 			System.out.println("\n");
 		}
 	}

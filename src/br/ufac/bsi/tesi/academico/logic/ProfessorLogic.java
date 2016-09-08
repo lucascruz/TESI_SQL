@@ -1,5 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
+import java.util.ArrayList;
+
 import br.ufac.bsi.tesi.academico.db.*;
 
 public class ProfessorLogic {
@@ -69,6 +71,11 @@ public class ProfessorLogic {
 		if (!sigla.isEmpty())
 			professor = pdb.getProfessor(sigla);
 
+		return professor;
+	}
+
+	public ArrayList<Professor> lstProfessor() {
+		ArrayList<Professor> professor = pdb.getTodosProfessores();
 		return professor;
 	}
 

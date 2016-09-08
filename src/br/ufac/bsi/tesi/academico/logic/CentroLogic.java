@@ -1,5 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
+import java.util.ArrayList;
+
 import br.ufac.bsi.tesi.academico.db.*;
 
 public class CentroLogic {
@@ -70,6 +72,11 @@ public class CentroLogic {
 			centro = cdb.getCentro(sigla);
 
 		return centro;
+	}
+
+	public ArrayList<Centro> lstCentros() {
+		ArrayList<Centro> centros = cdb.getTodosCentros();
+		return centros;
 	}
 
 	

@@ -2,7 +2,11 @@ package br.ufac.bsi.tesi.academico.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import com.mysql.jdbc.ResultSetMetaData;
+
+import br.ufac.bsi.tesi.academico.logic.Professor;
 import br.ufac.bsi.tesi.academico.logic.Professor;
 
 public class ProfessorDB {
@@ -14,7 +18,7 @@ public class ProfessorDB {
 	}
 
 	public boolean addProfessor(Professor professor){
-		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, centro_sigla) VALUES (" +
+		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, professor_sigla) VALUES (" +
 				"'" + professor.getMatricula() +"', '" + professor.getNome() +"', '"+ professor.getRg()+"', '"+professor.getCpf()+"', '"+professor.getEndereco()+"', '"+professor.getFone()+"', '"+professor.getSigla()+"'"+");";
 		System.out.println("tres");		
 		return (conexao.atualize(strIncluir)>0);
@@ -66,6 +70,36 @@ public class ProfessorDB {
 			}
 		}
 		return professor;
+	}
+
+	public ArrayList<Professor> getTodosProfessores() {
+		ArrayList<Professor>professors = new ArrayList<Professor>();
+		ResultSet rs = conexao.consulte("SELECT * FROM professor;");
+		ResultSetMetaData rsrs;
+		Professor professor =null;
+		
+		if(rs != null){
+			try{
+				professor = new Professor();
+				rsrs = (ResultSetMetaData) rs.getMetaData();
+				professor.setSigla(rsrs.getColumnLabel(1).toUpperCase());
+				professor.setNome(rsrs.getColumnLabel(2).toUpperCase());
+				professors.add(professor);
+				while (rs.next()){
+					professor = new Professor();
+					professor.setSigla(rs.getString(1));
+					professor.setNome(rs.getString(2));
+					professors.add(professor);
+					
+				}
+			}
+			catch(SQLException sqle){
+				System.out.printf("Erro: #%d [%s]\n", 
+						sqle.getErrorCode(), sqle.getMessage());
+			}
+			
+		}
+		return professors;
 	}
 	
 }

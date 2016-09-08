@@ -1,5 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
+import java.util.ArrayList;
+
 import br.ufac.bsi.tesi.academico.db.*;
 
 public class DisciplinaLogic {
@@ -71,6 +73,13 @@ public class DisciplinaLogic {
 
 		return disciplina;
 	}
+
+
+	public ArrayList<Disciplina> lstDisciplinas() {
+		ArrayList<Disciplina> disciplinas = ddb.getTodosDisciplinas();
+		return disciplinas;
+	}
+
 
 	
 }

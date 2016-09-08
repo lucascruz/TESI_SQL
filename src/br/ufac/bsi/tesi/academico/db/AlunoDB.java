@@ -2,7 +2,11 @@ package br.ufac.bsi.tesi.academico.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import com.mysql.jdbc.ResultSetMetaData;
+
+import br.ufac.bsi.tesi.academico.logic.Aluno;
 import br.ufac.bsi.tesi.academico.logic.Aluno;
 
 public class AlunoDB {
@@ -66,6 +70,36 @@ public class AlunoDB {
 			}
 		}
 		return aluno;
+	}
+
+	public ArrayList<Aluno>getTodosAlunos(){
+		ArrayList<Aluno>alunos = new ArrayList<Aluno>();
+		ResultSet rs = conexao.consulte("SELECT * FROM aluno;");
+		ResultSetMetaData rsrs;
+		Aluno aluno =null;
+		
+		if(rs != null){
+			try{
+				aluno = new Aluno();
+				rsrs = (ResultSetMetaData) rs.getMetaData();
+				aluno.setMatricula((rsrs.getColumnLabel(1).toUpperCase()));
+				aluno.setNome(rsrs.getColumnLabel(2).toUpperCase());
+				alunos.add(aluno);
+				while (rs.next()){
+					aluno = new Aluno();
+					aluno.setMatricula((rs.getString(1)));
+					aluno.setNome(rs.getString(2));
+					alunos.add(aluno);
+					
+				}
+			}
+			catch(SQLException sqle){
+				System.out.printf("Erro: #%d [%s]\n", 
+						sqle.getErrorCode(), sqle.getMessage());
+			}
+			
+		}
+		return alunos;
 	}
 	
 }

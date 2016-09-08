@@ -2,7 +2,11 @@ package br.ufac.bsi.tesi.academico.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import com.mysql.jdbc.ResultSetMetaData;
+
+import br.ufac.bsi.tesi.academico.logic.Disciplina;
 import br.ufac.bsi.tesi.academico.logic.Disciplina;
 
 public class DisciplinaDB {
@@ -67,5 +71,34 @@ public class DisciplinaDB {
 		}
 		return disciplina;
 	}
-	
+
+	public ArrayList<Disciplina>getTodosDisciplinas(){
+		ArrayList<Disciplina>disciplinas = new ArrayList<Disciplina>();
+		ResultSet rs = conexao.consulte("SELECT * FROM disciplina;");
+		ResultSetMetaData rsrs;
+		Disciplina disciplina =null;
+		
+		if(rs != null){
+			try{
+				disciplina = new Disciplina();
+				rsrs = (ResultSetMetaData) rs.getMetaData();
+				disciplina.setCodigo_curso((rsrs.getColumnLabel(1).toUpperCase()));
+				disciplina.setNome(rsrs.getColumnLabel(2).toUpperCase());
+				disciplinas.add(disciplina);
+				while (rs.next()){
+					disciplina = new Disciplina();
+					disciplina.setCodigo_curso((rs.getString(1)));
+					disciplina.setNome(rs.getString(2));
+					disciplinas.add(disciplina);
+					
+				}
+			}
+			catch(SQLException sqle){
+				System.out.printf("Erro: #%d [%s]\n", 
+						sqle.getErrorCode(), sqle.getMessage());
+			}
+			
+		}
+		return disciplinas;
+	}
 }
