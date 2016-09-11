@@ -89,7 +89,7 @@ public class Tela_Login extends JFrame {
 				if (cnx.conecte(urlDB, usuario, senha)){
 					Tela_Consulta frame1 = new Tela_Consulta(cnx);
 					frame1.setVisible(true);
-					setVisible(false);
+					dispose();
 					System.out.println(cnx);
 				}
 			//	cnx.desconecte();
