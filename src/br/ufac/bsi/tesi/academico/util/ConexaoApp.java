@@ -1,3 +1,4 @@
+package br.ufac.bsi.tesi.academico.util;
 // Classe ConexaoApp
 import java.sql.*;
 import java.util.*;
@@ -8,7 +9,7 @@ class ConexaoApp {
 
 	private static final String urlDB = "jdbc:mysql://localhost/academico?useSSL=false";
 
-	// Método main inicia execução do aplicativo
+	// Mï¿½todo main inicia execuï¿½ï¿½o do aplicativo
 	public static void main(String args[]){
 
 		String usuario, senha, strInstrucoes;
@@ -17,8 +18,8 @@ class ConexaoApp {
 		ResultSet rs = null;
 		ResultSetMetaData rsmd;
 
-		System.out.println("Bem vindo ao banco de dados acadêmico!");
-		System.out.println("Informe os dados do usuário para autentição:");
+		System.out.println("Bem vindo ao banco de dados acadï¿½mico!");
+		System.out.println("Informe os dados do usuï¿½rio para autentiï¿½ï¿½o:");
 
 		System.out.print("Nome: ");
 		usuario = leitor.nextLine();
@@ -50,7 +51,7 @@ class ConexaoApp {
 								sqle.getErrorCode(), sqle.getMessage());
 					}
 				}else{
-					System.out.println("O comando não produziu resultados!");
+					System.out.println("O comando nï¿½o produziu resultados!");
 				}
 				System.out.print("> ");
 				strInstrucoes = leitor.nextLine();				
@@ -60,7 +61,7 @@ class ConexaoApp {
 		leitor.close();
 		cnx.desconecte();			
 
-	} //Fim do método main
+	} //Fim do mï¿½todo main
 } //Fim da classe ConexaoDemo
 
 

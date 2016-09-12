@@ -1,4 +1,4 @@
-package br.ufac.bsi.tesi.academico.gui;
+package br.ufac.bsi.tesi.academico.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.gui.AcademicoGUI;
 
 import java.awt.GridLayout;
 import javax.swing.JTextField;
@@ -14,6 +15,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 
@@ -77,6 +80,22 @@ public class Tela_Login extends JFrame {
 				senha = (String) e.getSource();
 			}
 		});
+		passwordField.addKeyListener(new KeyAdapter() {
+			public void keyPressed(final KeyEvent e ){
+				int key = e.getKeyCode();
+				if (key == KeyEvent.VK_ENTER){
+					usuario = textField.getText();
+					char [] pass = passwordField.getPassword();
+					senha = new String (pass);
+					System.out.println(usuario+senha);
+					if (cnx.conecte(urlDB, usuario, senha)){
+						AcademicoGUI frame1 = new AcademicoGUI(cnx);
+						frame1.setVisible(true);
+						dispose();
+						System.out.println(cnx);}
+				}
+			}
+		});
 		panel.add(passwordField);
 
 		JButton btnNewButton = new JButton("LOGAR");
@@ -87,7 +106,7 @@ public class Tela_Login extends JFrame {
 				senha = new String (pass);
 				System.out.println(usuario+senha);
 				if (cnx.conecte(urlDB, usuario, senha)){
-					Tela_Consulta frame1 = new Tela_Consulta(cnx);
+					AcademicoGUI frame1 = new AcademicoGUI(cnx);
 					frame1.setVisible(true);
 					dispose();
 					System.out.println(cnx);

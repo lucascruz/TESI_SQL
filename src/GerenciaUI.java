@@ -1,8 +1,9 @@
-package br.ufac.bsi.tesi.academico.gui;
+
 
 import java.util.Scanner;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.gui.DisciplinaUI;
 import br.ufac.bsi.tesi.academico.logic.CentroLogic;
 
 public class GerenciaUI {

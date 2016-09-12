@@ -1,4 +1,4 @@
-package br.ufac.bsi.tesi.academico.gui;
+package br.ufac.bsi.tesi.academico.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.gui.ConsultorDataModel;
 
 import javax.swing.JTextArea;
 import javax.swing.JButton;
@@ -74,7 +75,7 @@ public class Tela_Consulta extends JFrame {
 					if (rs != null){
 						table.setModel(new ConsultorDataModel(rs));
 					}else{
-						System.out.println("O comando não produziu resultados!");
+						System.out.println("O comando nï¿½o produziu resultados!");
 					}
 				}
 			}

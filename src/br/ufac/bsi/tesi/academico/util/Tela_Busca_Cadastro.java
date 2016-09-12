@@ -1,4 +1,4 @@
-package br.ufac.bsi.tesi.academico.gui;
+package br.ufac.bsi.tesi.academico.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import br.ufac.bsi.tesi.academico.db.*;
+import br.ufac.bsi.tesi.academico.gui.ConsultorDataModel;
 import br.ufac.bsi.tesi.academico.logic.*;
 
 import javax.swing.JLabel;
@@ -223,7 +224,7 @@ public class Tela_Busca_Cadastro extends JFrame {
 
 	}
 	public void editar(){
-		System.out.println("Cheguei aqui... Tela de edição professor");
+		System.out.println("Cheguei aqui... Tela de ediï¿½ï¿½o professor");
 		JFrame f= new JFrame();
 		f.setSize(200,200);
 		f.setVisible(true);
@@ -313,7 +314,7 @@ public class Tela_Busca_Cadastro extends JFrame {
 			tblProfessores.setModel(new ConsultorDataModel(rs));
 		}else{
 			tblProfessores.setModel(null);
-			System.out.printf("Sua consulta não produziu resultados!", 
+			System.out.printf("Sua consulta nï¿½o produziu resultados!", 
 					"Consultaitor");	
 		}
 
@@ -345,11 +346,11 @@ public class Tela_Busca_Cadastro extends JFrame {
 		
 
 		if (cnx.atualize(strAtualizar) > 0){
-			JOptionPane.showMessageDialog(this, "Professor incluído com sucesso!", "Acadêmico", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Professor incluï¿½do com sucesso!", "Acadï¿½mico", JOptionPane.INFORMATION_MESSAGE);
 			setVisible(false);
 			contentPane.setVisible(true);			
 		}else{
-			JOptionPane.showMessageDialog(this, "Falha ao incluir o professor!", "Acadêmico", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Falha ao incluir o professor!", "Acadï¿½mico", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}}
 
