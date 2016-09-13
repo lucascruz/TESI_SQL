@@ -70,9 +70,9 @@ public class AlunoTableModel extends AbstractTableModel {
 			case 1:		
 				valor = aluno.getNome(); break;
 			case 2: 
-				valor = aluno.getSexo(); break;
+				valor = aluno.getCep(); break;
 			case 3: 
-				valor = aluno.getCurso_codigo(); break;
+				valor = aluno.getSexo(); break;
 			case 4: 
 				valor = aluno.getEndereco(); break;
 			case 5: 				

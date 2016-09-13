@@ -12,18 +12,17 @@ import javax.swing.*; 					//importando classes do swing
 
 public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 
-	private JTable tblDisciplinaes;
+	private JTable tblDisciplina;
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
 	private JComboBox<String> cmbCampos;
 	private JTextField fldValor;
-	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir;
+	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
 	private Conexao cnx;
 	private AcademicoGUI pai;	
-	private DisciplinaCadastroGUI pcgui;
+	private DisciplinaCadastroGUI disciplinagui;
 	private DisciplinaLogic disciplinaLogic;
 	
-//	ConsultaitorTableModel atm = new ConsultaitorTableModel();
 
 	public DisciplinaConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
 		super("Consulta de Disciplina");
@@ -33,14 +32,14 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		this.cnx = cnx;
 		this.pai = pai;
 
-		pcgui = new DisciplinaCadastroGUI(this, cnx);		
+		disciplinagui = new DisciplinaCadastroGUI(this, cnx);		
 		disciplinaLogic = new DisciplinaLogic();
 		disciplinaLogic.setConexao(cnx);
 		
-		tblDisciplinaes = new JTable(0,0);
-		tblDisciplinaes.setToolTipText("Lista de disciplinaes!");		
-		tblDisciplinaes.setFocusable(false);
-		tblDisciplinaes.addMouseListener(new MouseAdapter() {
+		tblDisciplina = new JTable(0,0);
+		tblDisciplina.setToolTipText("Lista de disciplinaes!");		
+		tblDisciplina.setFocusable(false);
+		tblDisciplina.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
 				btnEditar.setEnabled(true);
 				btnExcluir.setEnabled(true);
@@ -72,6 +71,9 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(this);
 		btnExcluir.setEnabled(false);
+		
+		btnListar = new JButton("Listar");
+		btnListar.addActionListener(this);
 
 		pnlRotulos.add(new JLabel("Buscar por"));
 		pnlRotulos.add(new JLabel("Chave de busca"));		
@@ -90,7 +92,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		pnlOperacoes.add(btnEditar);		
 		pnlOperacoes.add(btnExcluir);		
 		
-		add(new JScrollPane(tblDisciplinaes));
+		add(new JScrollPane(tblDisciplina));
 		add(pnlControles, BorderLayout.NORTH);
 		add(pnlOperacoes, BorderLayout.SOUTH);
 
@@ -114,6 +116,9 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		if (e.getSource() == btnExcluir){
 			excluir();
 		}		
+		if(e.getSource() == btnListar){
+			listar();
+		}
 		
 		if (e.getSource() == btnSair){
 			sair();			
@@ -134,9 +139,9 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
 		
 		if(disciplinaes != null){
-			tblDisciplinaes.setModel(new DisciplinaTableModel(disciplinaes));
+			tblDisciplina.setModel(new DisciplinaTableModel(disciplinaes));
 		}else{
-			tblDisciplinaes.setModel(null);
+			tblDisciplina.setModel(null);
 			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
 					 "Consulta de Disciplina", JOptionPane.PLAIN_MESSAGE);	
 		}
@@ -146,32 +151,53 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 
 	public void incluir(){
 		setVisible(false);
-		pcgui.incluir();
+		disciplinagui.incluir();
 	}
 
 	public void editar(){
 		String matricula;
 		
-		matricula = tblDisciplinaes.getModel().getValueAt(tblDisciplinaes.getSelectedRow(), 
+		matricula = tblDisciplina.getModel().getValueAt(tblDisciplina.getSelectedRow(), 
 				0).toString();
 		
 		setVisible(false);
-		pcgui.editar(matricula);
+		disciplinagui.editar(matricula);
 	}
 
 	public void excluir(){
 		String matricula;
 		
-		matricula = tblDisciplinaes.getModel().getValueAt(tblDisciplinaes.getSelectedRow(), 
+		matricula = tblDisciplina.getModel().getValueAt(tblDisciplina.getSelectedRow(), 
 				0).toString();
 		
 		setVisible(false);
-		pcgui.excluir(matricula);
+		disciplinagui.excluir(matricula);
 	}	
+	
+	public void atualiza(){
+		List<Disciplina> disciplinas = new ArrayList<Disciplina>();
+		disciplinas = disciplinaLogic.lstDisciplina();
+		tblDisciplina.setModel(new DisciplinaTableModel(disciplinas));
+	}
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
+	}
+	
+	public void listar(){
+		List<Disciplina> disciplinas = new ArrayList<Disciplina>();
+		disciplinas = disciplinaLogic.lstDisciplina();
+		
+		if(disciplinas != null){
+			tblDisciplina.setModel(new DisciplinaTableModel(disciplinas));
+		}else{
+			tblDisciplina.setModel(null);
+			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
+					 "Consulta de Disciplina", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
 	}
 
 }//Fim da classe DisciplinaConsultaGUI

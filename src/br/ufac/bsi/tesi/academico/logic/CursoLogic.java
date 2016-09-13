@@ -1,5 +1,6 @@
 package br.ufac.bsi.tesi.academico.logic;
 import java.util.ArrayList;
+import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.*;
 
@@ -24,7 +25,7 @@ public class CursoLogic {
 			return false;
 		else{
 			curso = new Curso();
-			curso.setCodigo_Curso(codigo);
+			curso.setCodigo(codigo);
 			curso.setNome(nome);
 			return cdb.addCurso(curso);
 		}
@@ -73,8 +74,7 @@ public class CursoLogic {
 		return curso;
 	}
 
-	public ArrayList<Curso> lstCurso() {
-		ArrayList<Curso> cursos = cdb.getTodosCursos();
-		return cursos;
+	public List<Curso> getTodosCursos() {
+		return cdb.getTodosCursos();
 	}		
 }

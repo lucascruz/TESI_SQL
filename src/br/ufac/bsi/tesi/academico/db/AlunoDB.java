@@ -3,32 +3,44 @@ package br.ufac.bsi.tesi.academico.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.mysql.jdbc.ResultSetMetaData;
+import javax.swing.JOptionPane;
 
 import br.ufac.bsi.tesi.academico.logic.Aluno;
-import br.ufac.bsi.tesi.academico.logic.Aluno;
+import br.ufac.bsi.tesi.academico.logic.Curso;
 
 public class AlunoDB {
-
 	private Conexao conexao;
+	private CursoDB cdb = new CursoDB();
+	private ResultSet rs;
 	
 	public void setConexao(Conexao conexao){
 		this.conexao = conexao;
+		cdb.setConexao(conexao);
 	}
-
 	public boolean addAluno(Aluno aluno){
-		String strIncluir = "INSERT INTO aluno (matricula, nome, fone, endereco, cep, sexo, curso_codigo) VALUES (" +
-				"'" + aluno.getMatricula() +"', '" + aluno.getNome() +"', '"+ aluno.getFone()+"', '"+aluno.getEndereco()+"', '"+aluno.getCep()+"', '"+aluno.getSexo()+"', '"+aluno.getCurso_codigo()+"'"+");";
-		System.out.println("tres");		
+		String strIncluir = "INSERT INTO aluno (matricula, nome, fone, endereco, cep, sexo, curso_codigo) VALUES ('" +
+				aluno.getMatricula() + "', '" + 
+				aluno.getNome() + "', '" + 
+				aluno.getFone() + "', '" + 
+				aluno.getEndereco() + "', '" + 
+				aluno.getCep() + "', '" + 
+				aluno.getSexo() + "', '" + 
+				aluno.getCurso().getCodigo() + "');";
+			
 		return (conexao.atualize(strIncluir)>0);
-
 	}
 	
 	public boolean updAluno(Aluno aluno){
-		String strEditar = "UPDATE aluno "
-				+ "SET nome = '" + aluno.getNome() +"' "
-				+ "WHERE curso_codigo = '" + aluno.getCurso_codigo() + "';";
+		String strEditar = "UPDATE aluno " +
+				"SET nome = '" + aluno.getNome() + "', " + 
+				"    fone = '" + aluno.getFone() + "', " + 
+				"	 endereco = '" + aluno.getEndereco() + "', " + 
+				"	 cep = '" + aluno.getCep() + "', " +
+				"	 sexo = '" + aluno.getSexo() + "', " +
+				"	 curso_codigo = '" + aluno.getCurso().getCodigo() + "' "+
+				"WHERE matricula = " + aluno.getMatricula() + ";";
 		
 		return (conexao.atualize(strEditar)>0);
 
@@ -36,70 +48,81 @@ public class AlunoDB {
 	
 	public boolean delAluno(Aluno aluno){
 		String strExcluir = "DELETE FROM aluno "
-				+ "WHERE curso_codigo = '" + aluno.getCurso_codigo() + "';";
+				+ "WHERE matricula = '" + aluno.getMatricula() + "';";
 		
 		return (conexao.atualize(strExcluir)>0);
 
 	}
 	
-
-	
-	public Aluno getAluno(String sigla){
+	public Aluno getAluno(String matricula){
 	
 		Aluno aluno = null;
-				
-		String strConsultar = "SELECT sigla, nome FROM aluno "
-				+ "WHERE sigla = '" + sigla + "';"; 
+		Curso curso = null;
+		
+		String strConsultar = "SELECT matricula, nome, fone, endereco, cep, sexo, curso_codigo" 
+			 + " FROM aluno "
+			 + " WHERE matricula = " + matricula + ";"; 
 
-		ResultSet rs = conexao.consulte(strConsultar);
+		rs = conexao.consulte(strConsultar);
 		
 		if(rs != null){
-			try{ // entrar aqui significa que o ResultSet não é nulo, mas não implica
-				 // que ele possua registros
-				if (rs.next()){ // retorna false se puder moverse para o próximo regisro
-								// o problema estava aqui, como não há registro, next()
-								// retorna false, por isso só podemos istanciar o Aluno, 
-								// se o next() retornar true, indicando que tem um registro
+			try{ 
+				if (rs.next()){ 
 					aluno = new Aluno();
-					aluno.setCurso_codigo(rs.getString(1));
-					aluno.setNome(rs.getString(2));									
+					aluno.setMatricula(rs.getString(1));
+					aluno.setNome(rs.getString(2));
+					aluno.setFone(rs.getString(3));
+					aluno.setEndereco(rs.getString(4));
+					aluno.setCep(rs.getString(5));
+					aluno.setSexo(rs.getString(6));
+			
+					curso = cdb.getCurso(rs.getString(7));
+					
+					if (curso != null){
+						aluno.setCurso(curso);
+					}
 				}
 			}catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
+				 
 			}
 		}
 		return aluno;
 	}
+	public List<Aluno> getTodosAlunos() {
+		List<Aluno> alunos = new ArrayList<Aluno>();
+		Curso curso = null;
+		Aluno aluno = null;
+		
+		String strConsultar = "SELECT matricula, nome, fone, endereco, cep, sexo, curso_codigo"
+				+ " FROM aluno;"; 
 
-	public ArrayList<Aluno>getTodosAlunos(){
-		ArrayList<Aluno>alunos = new ArrayList<Aluno>();
-		ResultSet rs = conexao.consulte("SELECT * FROM aluno;");
-		ResultSetMetaData rsrs;
-		Aluno aluno =null;
+		rs = conexao.consulte(strConsultar);
 		
 		if(rs != null){
-			try{
-				aluno = new Aluno();
-				rsrs = (ResultSetMetaData) rs.getMetaData();
-				aluno.setMatricula((rsrs.getColumnLabel(1).toUpperCase()));
-				aluno.setNome(rsrs.getColumnLabel(2).toUpperCase());
-				alunos.add(aluno);
+			try{ 
 				while (rs.next()){
 					aluno = new Aluno();
-					aluno.setMatricula((rs.getString(1)));
+					aluno.setMatricula(rs.getString(1));
 					aluno.setNome(rs.getString(2));
-					alunos.add(aluno);
+					aluno.setFone(rs.getString(3));
+					aluno.setEndereco(rs.getString(4));
+					aluno.setCep(rs.getString(5));
+					aluno.setSexo(rs.getString(6));
+
+					curso = cdb.getCurso(rs.getString(7));
 					
+					if (curso != null){
+						aluno.setCurso(curso);
+					}
+					alunos.add(aluno);
 				}
+			}catch(SQLException sqle){
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
 			}
-			catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
-			}
-			
 		}
 		return alunos;
 	}
-	
 }

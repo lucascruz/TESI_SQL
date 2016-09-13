@@ -1,94 +1,124 @@
 package br.ufac.bsi.tesi.academico.logic;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.ProfessorDB;
+import br.ufac.bsi.tesi.academico.logic.CentroLogic;
 
 public class ProfessorLogic {
-private ProfessorDB cdb = new ProfessorDB();
-	
+	private ProfessorDB pdb = new ProfessorDB();
+	private CentroLogic centroLogic = new CentroLogic();
+
 	public void setConexao(Conexao conexao){
-		cdb.setConexao(conexao);
+		pdb.setConexao(conexao);
+		centroLogic.setConexao(conexao);
 	}
 
-	public boolean addProfessor(String matricula, String nome, String rg, String cpf, String endereco, String fone, String centro_sigla){
+	public boolean addProfessor(int matricula, String nome, int rg, int cpf, 
+			String endereco, String fone, String centro_sigla){
 		Professor professor = null;
-		
-		if (nome.isEmpty() || matricula.isEmpty()||centro_sigla.isEmpty()||rg.isEmpty()||cpf.isEmpty())
-			return false;
-		
-		if (!matricula.isEmpty())
-			professor = cdb.getProfessor(matricula);
+		Centro centro = null;
 
-		if (professor != null)
-			return false;
-		
-		else
-			professor = new Professor();
-			professor.setMatricula(matricula); 
-			professor.setNome(nome); 
-			professor.setRg(rg);
-			professor.setCpf(cpf);
-			professor.setEndereco(endereco);
-			professor.setFone(fone);
-			professor.setCentro_sigla(centro_sigla);
-			return cdb.addProfessor(professor);
+
+
+		professor = pdb.getProfessor(matricula);
+
+		professor = new Professor();
+		professor.setMatricula(matricula);
+		professor.setNome(nome);
+		professor.setRg(rg);
+		professor.setCpf(cpf);
+		professor.setEndereco(endereco);
+		professor.setFone(fone);
+
+		centro = centroLogic.getCentro(centro_sigla);
+
+
+		professor.setCentro(centro);
+
+
+		return pdb.addProfessor(professor);
 	}
-	public boolean updProfessor(String matricula, String nome, String rg, String cpf, String endereco, String fone, String centro_sigla){
+
+
+	public boolean updProfessor(int matricula, String nome, int rg, int cpf, 
+			String endereco, String fone, String centrosigla){
 		Professor professor = null;
-		Professor cl= new Professor();
-		
-		if (nome.isEmpty() || matricula.isEmpty()||centro_sigla.isEmpty()||rg.isEmpty()||cpf.isEmpty())
+		Centro centro = null;
+
+		professor = pdb.getProfessor(matricula);
+
+
+		professor = new Professor();
+		professor.setMatricula(matricula);
+		professor.setNome(nome);
+		professor.setRg(rg);
+		professor.setCpf(cpf);
+		professor.setEndereco(endereco);
+		professor.setFone(fone);
+
+		centro = centroLogic.getCentro(centrosigla);
+
+
+		return pdb.updProfessor(professor);
+	}
+
+
+	public boolean delProfessor(int matricula, String nome, int rg, int cpf, 
+			String endereco, String fone, String centro_sigla){
+
+		Professor professor = null;
+		Centro centro = null;
+
+		if (matricula == 0 || rg == 0 || cpf == 0)
 			return false;
-		
-		if (!matricula.isEmpty())
-			professor = cdb.getProfessor(matricula);
+
+		if (nome.isEmpty() || endereco.isEmpty() || fone.isEmpty() || centro_sigla.isEmpty())
+			return false;
+
+		if (matricula != 0)
+			professor = pdb.getProfessor(matricula);
 
 		if (professor == null)
 			return false;
-		
-		if(cl.getCentro_sigla()!=centro_sigla)
-			return false;
-		
 		else{
-			professor.setNome(nome); 
+			professor = new Professor();
+			professor.setMatricula(matricula);
+			professor.setNome(nome);
 			professor.setRg(rg);
 			professor.setCpf(cpf);
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
-			professor.setCentro_sigla(centro_sigla);
-			return cdb.updProfessor(professor);
+
+			centro = centroLogic.getCentro(centro_sigla);
+
+			if (centro != null){
+				professor.setCentro(centro);
+			}			
+
+			return pdb.delProfessor(professor);
 		}
-
 	}
 
-	public boolean delProfessor(String matricula, String nome, String rg, String cpf, String endereco, String fone, String centro_sigla){
+	public Professor getProfessor(int matricula){
 		Professor professor = null;
-		
-		if (nome.isEmpty() || matricula.isEmpty()||centro_sigla.isEmpty()||rg.isEmpty()||cpf.isEmpty())
-			return false;
-		
-		if (!matricula.isEmpty())
-			professor = cdb.getProfessor(matricula);
 
-		if (professor == null)
-			return false;
-		else
-			return cdb.delProfessor(professor);
-	}
-
-	public Professor getProfessor(String matricula){
-		Professor professor = null;
-		
-		if (!matricula.isEmpty())
-			professor = cdb.getProfessor(matricula);
+		if (matricula != 0)
+			professor = pdb.getProfessor(matricula);
 
 		return professor;
-	}
+	}	
+	public List<Professor> getTodosProfessores(){
+		return pdb.getTodosProfessores();
+	}	
 
-	public ArrayList<Professor> lstProfessor() {
-		ArrayList<Professor> Professores = cdb.getTodosProfessores();
-		return Professores;
-	}		
+	public Professor getProfessorPorNome(String nome){
+		Professor professor = null;
+
+		if (!nome.isEmpty())
+			professor = pdb.getProfessoresPorNome(nome);
+
+		return professor;
+	}	
 }

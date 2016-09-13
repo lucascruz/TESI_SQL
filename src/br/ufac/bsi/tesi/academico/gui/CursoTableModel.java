@@ -41,7 +41,7 @@ public class CursoTableModel extends AbstractTableModel {
 
 	public int getColumnCount() {
 
-		return 7;
+		return 2;
 
 	}
 
@@ -56,7 +56,7 @@ public class CursoTableModel extends AbstractTableModel {
 		
 		switch(columnIndex) {
 			case 0:
-				valor = curso.getCodigo_Curso(); break;
+				valor = curso.getCodigo(); break;
 			case 1:		
 				valor = curso.getNome(); break;			
 			default:

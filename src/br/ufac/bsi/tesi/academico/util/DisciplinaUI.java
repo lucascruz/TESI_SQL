@@ -1,4 +1,4 @@
-package br.ufac.bsi.tesi.academico.gui;
+package br.ufac.bsi.tesi.academico.util;
 
 import java.util.*;
 

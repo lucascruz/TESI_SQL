@@ -16,15 +16,13 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
 	private JComboBox<String> cmbCampos;
 	private JTextField fldValor;
-	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir;
+	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
 	private Conexao cnx;
 	private AcademicoGUI pai;	
 	private AlunoCadastroGUI pcgui;
 	private AlunoLogic alunoLogic;
 	
-//	ConsultaitorTableModel atm = new ConsultaitorTableModel();
-
 	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
 		super("Consulta de Aluno");
 		setSize(800, 600); // chamando construtor da classe mãe
@@ -38,7 +36,7 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		alunoLogic.setConexao(cnx);
 		
 		tblalunos = new JTable(0,0);
-		tblalunos.setToolTipText("Lista de alunoes!");		
+		tblalunos.setToolTipText("Lista de alunos!");		
 		tblalunos.setFocusable(false);
 		tblalunos.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
@@ -72,6 +70,9 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(this);
 		btnExcluir.setEnabled(false);
+		
+		btnListar = new JButton("Listar");
+		btnListar.addActionListener(this);
 
 		pnlRotulos.add(new JLabel("Buscar por"));
 		pnlRotulos.add(new JLabel("Chave de busca"));		
@@ -88,7 +89,8 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 
 		pnlOperacoes.add(btnIncluir);
 		pnlOperacoes.add(btnEditar);		
-		pnlOperacoes.add(btnExcluir);		
+		pnlOperacoes.add(btnExcluir);
+		pnlOperacoes.add(btnListar);
 		
 		add(new JScrollPane(tblalunos));
 		add(pnlControles, BorderLayout.NORTH);
@@ -117,31 +119,35 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		
 		if (e.getSource() == btnSair){
 			sair();			
-		}		
+		}
+		if(e.getSource() == btnListar){
+			listar();
+		}
 		
 	}
 
 	public void buscar(){
 
-		List<Aluno> alunoes = new ArrayList<Aluno>();
+		List<Aluno> alunos = new ArrayList<Aluno>();
 
 		if (fldValor.getText().equals(""))
-			alunoes = alunoLogic.lstAluno();
+			alunos = alunoLogic.getTodosAlunos();
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
-				alunoes.add(alunoLogic.getAluno(fldValor.getText()));
+				alunos.add(alunoLogic.getAluno(fldValor.getText()));
 			else
 				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
 		
-		if(alunoes != null){
-			tblalunos.setModel(new AlunoTableModel(alunoes));
+		if(alunos != null){
+			tblalunos.setModel(new AlunoTableModel(alunos));
 		}else{
 			tblalunos.setModel(null);
 			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
 					 "Consulta de Aluno", JOptionPane.PLAIN_MESSAGE);	
 		}
+		tblalunos.setModel(new AlunoTableModel(alunos));
 		btnEditar.setEnabled(false);
-		btnExcluir.setEnabled(false);		
+		btnExcluir.setEnabled(false);			
 	}
 
 	public void incluir(){
@@ -172,6 +178,21 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
+	}
+	
+	public void listar(){
+		List<Aluno> alunos = new ArrayList<Aluno>();
+		alunos = alunoLogic.getTodosAlunos();
+		
+		if(alunos != null){
+			tblalunos.setModel(new AlunoTableModel(alunos));
+		}else{
+			tblalunos.setModel(null);
+			 JOptionPane.showMessageDialog(null, "Não produziu resultados sua pesquisa!", 
+					 "Consulta de Aluno", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
 	}
 
 }//Fim da classe AlunoConsultaGUI

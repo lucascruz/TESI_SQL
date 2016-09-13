@@ -20,10 +20,9 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 
 	private Conexao cnx;
 	private AcademicoGUI pai;	
-	private CentroCadastroGUI pcgui;
+	private CentroCadastroGUI centroGUI;
 	private CentroLogic centroLogic;
-	
-//	ConsultaitorTableModel atm = new ConsultaitorTableModel();
+
 
 	public CentroConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
 		super("Consulta de Centro");
@@ -33,7 +32,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		this.cnx = cnx;
 		this.pai = pai;
 
-		pcgui = new CentroCadastroGUI(this, cnx);		
+		centroGUI = new CentroCadastroGUI(this, cnx);		
 		centroLogic = new CentroLogic();
 		centroLogic.setConexao(cnx);
 		
@@ -121,57 +120,65 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		
 	}
 
+
+	public void atualize(){
+		List<Centro> centros = new ArrayList<Centro>();
+		centros = centroLogic.lstCentros();
+		tblCentros.setModel(new CentroTableModel(centros));
+	}
 	public void buscar(){
 
-		List<Centro> centroes = new ArrayList<Centro>();
+		List<Centro> centros = new ArrayList<Centro>();
 
 		if (fldValor.getText().equals(""))
-			centroes = centroLogic.lstCentros();
+			 JOptionPane.showMessageDialog(null, "Digite uma sigla para a consulta!", 
+					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
-				centroes.add(centroLogic.getCentro(fldValor.getText()));
-			else
-				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
-		
-		if(centroes != null){
-			tblCentros.setModel(new CentroTableModel(centroes));
-		}else{
-			tblCentros.setModel(null);
-			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
-					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
-		}
+				centros.add(centroLogic.getCentro(fldValor.getText()));
+			
+		tblCentros.setModel(new CentroTableModel(centros));
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);		
 	}
 
 	public void incluir(){
 		setVisible(false);
-		pcgui.incluir();
+		centroGUI.incluir();
 	}
 
 	public void editar(){
-		String matricula;
-		
-		matricula = tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 
-				0).toString();
+		String sigla = (tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 0).toString());
 		
 		setVisible(false);
-		pcgui.editar(matricula);
+		centroGUI.editar(sigla);
 	}
 
-	public void excluir(){
-		String matricula;
-		
-		matricula = tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 
-				0).toString();
+	public void excluir(){	
+		String sigla = (tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 
+				0).toString());
 		
 		setVisible(false);
-		pcgui.excluir(matricula);
+		centroGUI.excluir(sigla);
 	}	
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
+	}
+	public void Listar(){
+		List<Centro> centros = new ArrayList<Centro>();
+		centros = centroLogic.lstCentros();
+		
+		if(centros != null){
+			tblCentros.setModel(new CentroTableModel(centros));
+		}else{
+			tblCentros.setModel(null);
+			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
+					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
 	}
 
 }//Fim da classe CentroConsultaGUI

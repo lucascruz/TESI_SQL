@@ -22,7 +22,6 @@ class CursoCadastroGUI extends JFrame implements ActionListener {
 	private Conexao cnx;
 
 	private CursoLogic cursoLogic = new CursoLogic();
-	private CentroLogic centroLogic = new CentroLogic();	
 
 	CursoCadastroGUI(CursoConsultaGUI pai, Conexao cnx){ // método construtor
 		super(""); 				// chamando construtor da classe mãe
@@ -32,7 +31,6 @@ class CursoCadastroGUI extends JFrame implements ActionListener {
 		this.cnx = cnx;
 
 		cursoLogic.setConexao(cnx);
-		centroLogic.setConexao(cnx);		
 
 		operacoesNomes = new String[]{"Inclusão", "Edicação", "Exclusão"};
 
@@ -117,38 +115,27 @@ class CursoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String matricula){
+	public void carregarCampos(String codigo){
 
-		Curso curso = cursoLogic.getCurso(matricula);
-		Centro centro;
-		
+		Curso curso = cursoLogic.getCurso(codigo);
+
 		if (curso == null){
-			JOptionPane.showMessageDialog(null, "Curso não encontrado!", 
+			JOptionPane.showMessageDialog(null, "Curso não foi encontrado!", 
 					"Cadastro de Curso", JOptionPane.PLAIN_MESSAGE);	
 		}else{
-			fldCodigo.setText(""+curso.getCodigo_Curso());
+			fldCodigo.setText(curso.getCodigo());
 			fldNome.setText(curso.getNome());
-
-			for (int i=0; i < cmbCentro.getModel().getSize(); i++){
-				centro = cmbCentro.getModel().getElementAt(i);
-				if (centro.getNome().equals(curso.getCodigo_Curso().toString()))
-					cmbCentro.setSelectedItem(centro.getNome().toString());
-			}
 		}
-
 	}
 
 
 	public void confirmar(){
 
-		Centro centro;
 		boolean confirmado;
 		
 		String codigo = fldCodigo.getText();
 		String nome = fldNome.getText();
 		
-		centro = (Centro)cmbCentro.getSelectedItem();
-		String centro_sigla = centro.getSigla();
 		
 		switch (operacao) {
 		case 0:

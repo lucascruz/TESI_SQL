@@ -21,19 +21,11 @@ public class DisciplinaTableModel extends AbstractTableModel {
 		
 		switch(columnIndex) {
 			case 0:
-				nomeDaColuna = "Matrícula"; break;
+				nomeDaColuna = "Codigo"; break;
 			case 1: 
 				nomeDaColuna = "Nome"; break;
 			case 2: 
-				nomeDaColuna = "RG"; break;
-			case 3: 
-				nomeDaColuna = "CPF"; break;
-			case 4: 
-				nomeDaColuna = "Endereço"; break;
-			case 5: 
-				nomeDaColuna = "Fone"; break;
-			case 6: 
-				nomeDaColuna = "Centro"; break;	
+				nomeDaColuna = "Ch"; break;
 			default:
 				nomeDaColuna = null;
 		}

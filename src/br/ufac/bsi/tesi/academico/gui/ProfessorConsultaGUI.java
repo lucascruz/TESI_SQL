@@ -16,7 +16,7 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
 	private JComboBox<String> cmbCampos;
 	private JTextField fldValor;
-	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir;
+	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
 	private Conexao cnx;
 	private AcademicoGUI pai;	
@@ -72,6 +72,9 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(this);
 		btnExcluir.setEnabled(false);
+		
+		btnListar = new JButton("Listar");
+		btnListar.addActionListener(this);
 
 		pnlRotulos.add(new JLabel("Buscar por"));
 		pnlRotulos.add(new JLabel("Chave de busca"));		
@@ -88,7 +91,8 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 
 		pnlOperacoes.add(btnIncluir);
 		pnlOperacoes.add(btnEditar);		
-		pnlOperacoes.add(btnExcluir);		
+		pnlOperacoes.add(btnExcluir);
+		pnlOperacoes.add(btnListar);
 		
 		add(new JScrollPane(tblProfessores));
 		add(pnlControles, BorderLayout.NORTH);
@@ -113,7 +117,11 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 
 		if (e.getSource() == btnExcluir){
 			excluir();
-		}		
+		}	
+		
+		if (e.getSource() == btnListar){
+			listar();			
+		}	
 		
 		if (e.getSource() == btnSair){
 			sair();			
@@ -126,10 +134,10 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 		List<Professor> professores = new ArrayList<Professor>();
 
 		if (fldValor.getText().equals(""))
-			professores = professorLogic.lstProfessor();
+			professores = professorLogic.getTodosProfessores();
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
-				professores.add(professorLogic.getProfessor(fldValor.getText()));
+				professores.add(professorLogic.getProfessor(Integer.parseInt(fldValor.getText())));
 			else
 				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
 		
@@ -150,29 +158,50 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 	}
 
 	public void editar(){
-		String matricula;
+		int matricula;
 		
-		matricula = tblProfessores.getModel().getValueAt(tblProfessores.getSelectedRow(), 
-				0).toString();
+		matricula = Integer.parseInt(tblProfessores.getModel().getValueAt(tblProfessores.getSelectedRow(), 
+				0).toString());
 		
 		setVisible(false);
 		pcgui.editar(matricula);
 	}
 
 	public void excluir(){
-		String matricula;
+		int matricula;
 		
-		matricula = tblProfessores.getModel().getValueAt(tblProfessores.getSelectedRow(), 
-				0).toString();
+		matricula = Integer.parseInt(tblProfessores.getModel().getValueAt(tblProfessores.getSelectedRow(), 
+				0).toString());
 		
 		setVisible(false);
-		pcgui.excluir(matricula);
+		pcgui.excluir(matricula);;
 	}	
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
 	}
+	
+	public void listar(){
+		List<Professor> professores = new ArrayList<Professor>();
+		professores = professorLogic.getTodosProfessores();
+
+		if(professores != null){
+			tblProfessores.setModel(new ProfessorTableModel(professores));
+		}else{
+			tblProfessores.setModel(null);
+			JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
+					"Consulta de Professor", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
+	}
+	public void atualize(){
+		List<Professor> professores = new ArrayList<Professor>();
+		professores = professorLogic.getTodosProfessores();
+		tblProfessores.setModel(new ProfessorTableModel(professores));
+	}
+	
 
 }//Fim da classe ProfessorConsultaGUI
 

@@ -3,7 +3,8 @@ package br.ufac.bsi.tesi.academico.logic;
 public class Aluno{
 	
 	private String nome; 
-	private String endereco, sexo, matricula, fone, cep, curso_codigo;
+	private String endereco, sexo, matricula, fone, cep;
+	private Curso curso;
 	  
 	public String getCep() {
 		return cep;
@@ -41,10 +42,10 @@ public class Aluno{
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
-	public String getCurso_codigo() {
-		return curso_codigo;
+	public Curso getCurso() {
+		return curso;
 	}
-	public void setCurso_codigo(String string) {
-		this.curso_codigo = string;
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 }

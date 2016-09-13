@@ -11,8 +11,8 @@ import java.util.ArrayList;
 class AlunoCadastroGUI extends JFrame implements ActionListener {
 
 	private JPanel pnlControles, pnlOperacoes, pnlRotulos, pnlCampos;
-	private JComboBox<Centro> cmbCentro;
-	private JTextField fldMatricula, fldNome, fldRg, fldCpf, fldEndereco, fldFone;
+	private JComboBox<Curso> cmbCurso;
+	private JTextField fldMatricula, fldNome, fldFone, fldCep, fldEndereco, fldSexo;
 	private JButton btnConfirmar, btnCancelar;
 
 	private String[] operacoesNomes;
@@ -22,7 +22,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	private Conexao cnx;
 
 	private AlunoLogic alunoLogic = new AlunoLogic();
-	private CentroLogic centroLogic = new CentroLogic();	
+	private CursoLogic cursoLogic = new CursoLogic();	
 
 	AlunoCadastroGUI(AlunoConsultaGUI pai, Conexao cnx){ // método construtor
 		super(""); 				// chamando construtor da classe mãe
@@ -32,39 +32,38 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		this.cnx = cnx;
 
 		alunoLogic.setConexao(cnx);
-		centroLogic.setConexao(cnx);		
+		cursoLogic.setConexao(cnx);		
 
 		operacoesNomes = new String[]{"Inclusão", "Edicação", "Exclusão"};
 
 		pnlRotulos = new JPanel(new GridLayout(7,1,5,5));
-		pnlRotulos.add(new JLabel("Matrícula"));
+		pnlRotulos.add(new JLabel("Matricula"));
 		pnlRotulos.add(new JLabel("Nome"));
-		pnlRotulos.add(new JLabel("RG"));		
-		pnlRotulos.add(new JLabel("CPF"));
-		pnlRotulos.add(new JLabel("Endereço"));		
 		pnlRotulos.add(new JLabel("Fone"));		
-		pnlRotulos.add(new JLabel("Centro"));		
+		pnlRotulos.add(new JLabel("Endereço"));
+		pnlRotulos.add(new JLabel("Cep"));		
+		pnlRotulos.add(new JLabel("Sexo"));		
+		pnlRotulos.add(new JLabel("Curso"));		
 
 		fldMatricula = new JTextField();
 		fldNome = new JTextField();		
-		fldRg = new JTextField();		
-		fldCpf = new JTextField();
+		fldCep = new JTextField();		
+		fldSexo = new JTextField();
 		fldEndereco = new JTextField();		
 		fldFone = new JTextField();		
 		
 
-		cmbCentro = new JComboBox(centroLogic.lstCentros().toArray());
-		
+		cmbCurso = new JComboBox(cursoLogic.getTodosCursos().toArray());
 		
 		
 		pnlCampos = new JPanel(new GridLayout(7,1,5,5));
 		pnlCampos.add(fldMatricula);
 		pnlCampos.add(fldNome);
-		pnlCampos.add(fldRg);
-		pnlCampos.add(fldCpf);
+		pnlCampos.add(fldFone);
 		pnlCampos.add(fldEndereco);
-		pnlCampos.add(fldFone);		
-		pnlCampos.add(cmbCentro);		
+		pnlCampos.add(fldCep);
+		pnlCampos.add(fldSexo);		
+		pnlCampos.add(cmbCurso);		
 
 		pnlControles = new JPanel(new BorderLayout(5,5));
 		pnlControles.add(pnlRotulos, BorderLayout.WEST);
@@ -107,18 +106,18 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setTitle(operacoesNomes[operacao]+ " de Aluno");
 		fldMatricula.setText("");
 		fldNome.setText("");
-		fldRg.setText("");
-		fldCpf.setText("");		
+		fldFone.setText("");
+		fldCep.setText("");		
 		fldEndereco.setText("");
-		fldFone.setText("");		
-		cmbCentro.setSelectedIndex(0);		
+		fldSexo.setText("");		
+		cmbCurso.setSelectedIndex(0);		
 		fldMatricula.setEnabled(true);
 		fldNome.setEnabled(true);
-		fldRg.setEnabled(true);
-		fldCpf.setEnabled(true);
+		fldFone.setEnabled(true);
+		fldCep.setEnabled(true);
 		fldEndereco.setEnabled(true);
 		fldFone.setEnabled(true);
-		cmbCentro.setEnabled(true);
+		cmbCurso.setEnabled(true);
 		setVisible(true);	
 	}
 
@@ -130,11 +129,11 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 
 		fldMatricula.setEnabled(false);
 		fldNome.setEnabled(true);
-		fldRg.setEnabled(true);
-		fldCpf.setEnabled(true);
+		fldFone.setEnabled(true);
+		fldCep.setEnabled(true);
 		fldEndereco.setEnabled(true);
-		fldFone.setEnabled(true);		
-		cmbCentro.setEnabled(true);
+		fldSexo.setEnabled(true);		
+		cmbCurso.setEnabled(true);
 		setVisible(true);	
 	}
 
@@ -146,34 +145,34 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 
 		fldMatricula.setEnabled(false);
 		fldNome.setEnabled(false);
-		fldRg.setEnabled(false);
-		fldCpf.setEnabled(false);
+		fldFone.setEnabled(false);
+		fldCep.setEnabled(false);
 		fldEndereco.setEnabled(false);
-		fldFone.setEnabled(false);		
-		cmbCentro.setEnabled(false);
+		fldSexo.setEnabled(false);		
+		cmbCurso.setEnabled(false);
 		setVisible(true);	
 	}
 
 	public void carregarCampos(String matricula){
 
 		Aluno aluno = alunoLogic.getAluno(matricula);
-		Centro centro;
+		Curso curso;
 		
 		if (aluno == null){
 			JOptionPane.showMessageDialog(null, "Aluno não encontrado!", 
 					"Cadastro de Aluno", JOptionPane.PLAIN_MESSAGE);	
 		}else{
 			fldMatricula.setText(""+aluno.getMatricula());
-			fldNome.setText(aluno.getNome());
-			fldRg.setText(""+aluno.getSexo());
-			fldCpf.setText(""+aluno.getCurso_codigo());
-			fldEndereco.setText(aluno.getEndereco());
-			fldFone.setText(aluno.getFone());
+			fldNome.setText(""+aluno.getNome());
+			fldFone.setText(""+aluno.getFone());
+			fldCep.setText(""+aluno.getCep());
+			fldEndereco.setText(""+aluno.getEndereco());
+			fldSexo.setText(""+aluno.getSexo());
 
-			for (int i=0; i < cmbCentro.getModel().getSize(); i++){
-				centro = cmbCentro.getModel().getElementAt(i);
-				if (centro.getNome().equals(aluno.getMatricula().toString()))
-					cmbCentro.setSelectedItem(centro.getNome().toString());
+			for (int i=0; i < cmbCurso.getModel().getSize(); i++){
+				curso = cmbCurso.getModel().getElementAt(i);
+				if (curso.getCodigo().equals(aluno.getCurso().getCodigo()))
+					cmbCurso.setSelectedItem(curso);
 			}
 		}
 
@@ -182,28 +181,28 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 
 	public void confirmar(){
 
-		Centro centro;
+		Curso curso;
 		boolean confirmado;
 		
 		String matricula = fldMatricula.getText();
 		String nome = fldNome.getText();
-		String rg = fldRg.getText();
-		String cpf = fldCpf.getText();
-		String endereco = fldEndereco.getText();
 		String fone = fldFone.getText();
-	
-		centro = (Centro)cmbCentro.getSelectedItem();
-		String centro_sigla = centro.getSigla();
+		String cep = fldCep.getText();
+		String endereco = fldEndereco.getText();
+		String sexo = fldSexo.getText();
+
+		curso = (Curso)cmbCurso.getSelectedItem();
+		String cursoNome = curso.getNome();
 		
 		switch (operacao) {
 		case 0:
-			confirmado = alunoLogic.addAluno(matricula, nome, rg, cpf, endereco, fone, centro_sigla);
+			confirmado = alunoLogic.addAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
 			break;
 		case 1:
-			confirmado = alunoLogic.updAluno(matricula, nome, rg, cpf, endereco, fone, centro_sigla);
+			confirmado = alunoLogic.updAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
 			break;
 		case 2:
-			confirmado = alunoLogic.delAluno(matricula, nome, rg, cpf, endereco, fone, centro_sigla);
+			confirmado = alunoLogic.delAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
 			break;			
 		default:
 			confirmado = false;

@@ -78,7 +78,7 @@ public class ProfessorTableModel extends AbstractTableModel {
 			case 5: 				
 				valor = professor.getFone(); break;
 			case 6: 
-				valor = professor.getCentro_sigla(); break; // SE DESEJAR PODE SER O NOME				
+				valor = professor.getCentro().getSigla(); break;				
 			default:
 				valor = null; break;
 		}

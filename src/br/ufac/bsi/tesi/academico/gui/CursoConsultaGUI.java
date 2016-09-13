@@ -12,19 +12,17 @@ import javax.swing.*; 					//importando classes do swing
 
 public class CursoConsultaGUI extends JFrame implements ActionListener{
 
-	private JTable tblCursoes;
+	private JTable tblCursos;
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
 	private JComboBox<String> cmbCampos;
 	private JTextField fldValor;
-	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir;
+	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
 	private Conexao cnx;
 	private AcademicoGUI pai;	
-	private CursoCadastroGUI pcgui;
+	private CursoCadastroGUI cursogui;
 	private CursoLogic cursoLogic;
 	
-//	ConsultaitorTableModel atm = new ConsultaitorTableModel();
-
 	public CursoConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
 		super("Consulta de Curso");
 		setSize(800, 600); // chamando construtor da classe mãe
@@ -33,14 +31,14 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 		this.cnx = cnx;
 		this.pai = pai;
 
-		pcgui = new CursoCadastroGUI(this, cnx);		
+		cursogui = new CursoCadastroGUI(this, cnx);		
 		cursoLogic = new CursoLogic();
 		cursoLogic.setConexao(cnx);
 		
-		tblCursoes = new JTable(0,0);
-		tblCursoes.setToolTipText("Lista de cursoes!");		
-		tblCursoes.setFocusable(false);
-		tblCursoes.addMouseListener(new MouseAdapter() {
+		tblCursos = new JTable(0,0);
+		tblCursos.setToolTipText("Lista de cursoes!");		
+		tblCursos.setFocusable(false);
+		tblCursos.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
 				btnEditar.setEnabled(true);
 				btnExcluir.setEnabled(true);
@@ -72,6 +70,9 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(this);
 		btnExcluir.setEnabled(false);
+		
+		btnListar = new JButton("Listar");
+		btnListar.addActionListener(this);
 
 		pnlRotulos.add(new JLabel("Buscar por"));
 		pnlRotulos.add(new JLabel("Chave de busca"));		
@@ -88,9 +89,10 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 
 		pnlOperacoes.add(btnIncluir);
 		pnlOperacoes.add(btnEditar);		
-		pnlOperacoes.add(btnExcluir);		
+		pnlOperacoes.add(btnExcluir);
+		pnlOperacoes.add(btnListar);
 		
-		add(new JScrollPane(tblCursoes));
+		add(new JScrollPane(tblCursos));
 		add(pnlControles, BorderLayout.NORTH);
 		add(pnlOperacoes, BorderLayout.SOUTH);
 
@@ -126,7 +128,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 		List<Curso> cursoes = new ArrayList<Curso>();
 
 		if (fldValor.getText().equals(""))
-			cursoes = cursoLogic.lstCurso();
+			cursoes = cursoLogic.getTodosCursos();
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
 				cursoes.add(cursoLogic.getCurso(fldValor.getText()));
@@ -134,9 +136,9 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
 		
 		if(cursoes != null){
-			tblCursoes.setModel(new CursoTableModel(cursoes));
+			tblCursos.setModel(new CursoTableModel(cursoes));
 		}else{
-			tblCursoes.setModel(null);
+			tblCursos.setModel(null);
 			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
 					 "Consulta de Curso", JOptionPane.PLAIN_MESSAGE);	
 		}
@@ -146,33 +148,54 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 
 	public void incluir(){
 		setVisible(false);
-		pcgui.incluir();
+		cursogui.incluir();
 	}
 
 	public void editar(){
 		String matricula;
 		
-		matricula = tblCursoes.getModel().getValueAt(tblCursoes.getSelectedRow(), 
+		matricula = tblCursos.getModel().getValueAt(tblCursos.getSelectedRow(), 
 				0).toString();
 		
 		setVisible(false);
-		pcgui.editar(matricula);
+		cursogui.editar(matricula);
 	}
 
 	public void excluir(){
 		String matricula;
 		
-		matricula = tblCursoes.getModel().getValueAt(tblCursoes.getSelectedRow(), 
+		matricula = tblCursos.getModel().getValueAt(tblCursos.getSelectedRow(), 
 				0).toString();
 		
 		setVisible(false);
-		pcgui.excluir(matricula);
+		cursogui.excluir(matricula);
 	}	
+	
+	public void atualize(){
+		List<Curso> cursos = new ArrayList<Curso>();
+		cursos = cursoLogic.getTodosCursos();
+		tblCursos.setModel(new CursoTableModel(cursos));
+	}
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
 	}
+	public void Listar(){
+		List<Curso> cursos = new ArrayList<Curso>();
+		cursos = cursoLogic.getTodosCursos();
+		
+		if(cursos != null){
+			tblCursos.setModel(new CursoTableModel(cursos));
+		}else{
+			tblCursos.setModel(null);
+			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
+					 "Consulta de Curso", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
+	}
+	
 
 }//Fim da classe CursoConsultaGUI
 
