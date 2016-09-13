@@ -48,4 +48,5 @@ public class Aluno{
 	public void setCurso(Curso curso) {
 		this.curso = curso;
 	}
+	
 }

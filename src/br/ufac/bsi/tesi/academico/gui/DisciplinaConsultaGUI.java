@@ -131,7 +131,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		List<Disciplina> disciplinaes = new ArrayList<Disciplina>();
 
 		if (fldValor.getText().equals(""))
-			disciplinaes = disciplinaLogic.lstDisciplina();
+			disciplinaes = disciplinaLogic.getTodasDisciplinas();
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
 				disciplinaes.add(disciplinaLogic.getDisciplina(fldValor.getText()));
@@ -176,7 +176,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 	
 	public void atualiza(){
 		List<Disciplina> disciplinas = new ArrayList<Disciplina>();
-		disciplinas = disciplinaLogic.lstDisciplina();
+		disciplinas = disciplinaLogic.getTodasDisciplinas();
 		tblDisciplina.setModel(new DisciplinaTableModel(disciplinas));
 	}
 	
@@ -187,7 +187,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 	
 	public void listar(){
 		List<Disciplina> disciplinas = new ArrayList<Disciplina>();
-		disciplinas = disciplinaLogic.lstDisciplina();
+		disciplinas = disciplinaLogic.getTodasDisciplinas();
 		
 		if(disciplinas != null){
 			tblDisciplina.setModel(new DisciplinaTableModel(disciplinas));

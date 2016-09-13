@@ -1,6 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.*;
 
@@ -74,10 +75,8 @@ public class CentroLogic {
 		return centro;
 	}
 
-	public ArrayList<Centro> lstCentros() {
-		ArrayList<Centro> centros = cdb.getTodosCentros();
-		return centros;
+	public List<Centro> lstCentros() {
+		return cdb.getTodosCentros();
 	}
-
 	
 }

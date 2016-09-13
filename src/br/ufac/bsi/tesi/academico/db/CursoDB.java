@@ -64,7 +64,6 @@ public class CursoDB {
 	}
 	public List<Curso> getTodosCursos() {
 		List<Curso> cursos = new ArrayList<Curso>(); // fiquei com preguiça de sair mudando as variaveis aq oh, 
-		//deixei centro msm kkkkk
 		Curso curso= null;
 
 		String strConsultar = "SELECT codigo, nome"

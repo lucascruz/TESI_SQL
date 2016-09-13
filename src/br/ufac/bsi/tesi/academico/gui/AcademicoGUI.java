@@ -13,8 +13,8 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 	CursoConsultaGUI cursoConsultaGUI;
 	DisciplinaConsultaGUI disciplinaConsultaGUI;
 	AlunoConsultaGUI alunoConsultaGui;
-	private JMenu mnCadastro;
-	private JMenuItem mntmProfessor, mntmCentro, mntmCurso, mntmDisciplina, mntmAluno;
+	private JMenu mnCadastro, mnSobre;
+	private JMenuItem mntmProfessor, mntmCentro, mntmCurso, mntmDisciplina, mntmAluno, mntmHelp;
 	private JSeparator separator;
 	private JMenuItem mntmSair;
 
@@ -36,6 +36,9 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 		mnCadastro = new JMenu("Cadastro");
 		menuBar.add(mnCadastro);
 		
+		mnSobre = new JMenu("Sobre");
+		menuBar.add(mnSobre);
+		
 		mntmProfessor = new JMenuItem("Professor");
 		mntmProfessor .addActionListener(this);
 		mnCadastro.add(mntmProfessor);
@@ -56,12 +59,18 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 		mntmCentro.addActionListener(this);
 		mnCadastro.add(mntmCentro);
 		
+		
+		
+		mntmHelp = new JMenuItem("Help");
+		mntmHelp.addActionListener(this);
+		mnSobre.add(mntmHelp);
+		
 		separator = new JSeparator();
 		mnCadastro.add(separator);
-		
+			
 		mntmSair = new JMenuItem("Sair");
 		mntmSair.addActionListener(this);
-		mnCadastro.add(mntmSair);
+		mnSobre.add(mntmSair);
 		
 	}
 
@@ -90,6 +99,11 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 		if(e.getSource()== mntmAluno){
 			setVisible(false);
 			alunoConsultaGui.setVisible(true);
+		}
+
+		if(e.getSource()== mntmHelp){
+			JOptionPane.showMessageDialog(null, "Infelizmente não tem ajuda!", 
+					"HELP", JOptionPane.PLAIN_MESSAGE);	
 		}
 	}
 	

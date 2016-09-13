@@ -4,8 +4,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import br.ufac.bsi.tesi.academico.logic.Curso;
+import javax.swing.JOptionPane;
+
 import br.ufac.bsi.tesi.academico.logic.Disciplina;
 
 public class DisciplinaDB {
@@ -15,7 +17,7 @@ private Conexao conexao;
 		this.conexao = conexao;
 	}
 	public boolean addDisciplina(Disciplina disciplina){
-		String strIncluir = "INSERT INTO disciplina (codigo, nome, ch) VALUES ('" + disciplina.getCodigo() 
+		String strIncluir = "INSERT INTO disciplina (codigo, nome, ch) VALUES ('" + disciplina.getCodigo()
 		 + "', '" + disciplina.getNome()+ "', '"+ disciplina.getCh() +"');";
 	
 		System.out.println("Disciplina inserida");	
@@ -54,14 +56,14 @@ private Conexao conexao;
 					disciplina.setCh(rs.getString(3));
 				}
 			}catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 		return disciplina;
 	}
-	public ArrayList<Disciplina> getTodasDisciplinas() {
-		ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>(); 
+	public List<Disciplina> getTodasDisciplinas() {
+		List<Disciplina> disciplinas = new ArrayList<Disciplina>(); 
 
 		ResultSet rs = conexao.consulte("SELECT * FROM disciplina;");
 		ResultSetMetaData rsrs;
@@ -83,7 +85,8 @@ private Conexao conexao;
 
 				}
 			} catch (SQLException sqle) {
-				System.out.printf("Erro: #%d [%s]\n", sqle.getErrorCode(), sqle.getMessage());
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 		return disciplinas;

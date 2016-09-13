@@ -1,104 +1,94 @@
 package br.ufac.bsi.tesi.academico.db;
 
+import java.util.*;
+
+import javax.swing.JOptionPane;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
-import com.mysql.jdbc.ResultSetMetaData;
 
 import br.ufac.bsi.tesi.academico.logic.Centro;
-
 public class CentroDB {
 
 	private Conexao conexao;
-	
+	private ResultSet rs; 
 	public void setConexao(Conexao conexao){
 		this.conexao = conexao;
 	}
 
 	public boolean addCentro(Centro centro){
 		String strIncluir = "INSERT INTO centro (sigla, nome) VALUES (" +
-				"'" + centro.getSigla() +"', '" + centro.getNome() +"');";
-		System.out.println("tres");		
+				"'" + centro.getSigla() +"', '" + centro.getNome() +"');";		
 		return (conexao.atualize(strIncluir)>0);
 
 	}
-	
+
 	public boolean updCentro(Centro centro){
 		String strEditar = "UPDATE centro "
 				+ "SET nome = '" + centro.getNome() +"' "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
-		
+
 		return (conexao.atualize(strEditar)>0);
 
 	}
-	
+
 	public boolean delCentro(Centro centro){
-		String strExcluir = "DELETE CASCADE FROM centro "
+		String strExcluir = "DELETE FROM centro "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
-		
+
 		return (conexao.atualize(strExcluir)>0);
 
 	}
-	
 
-	
 	public Centro getCentro(String sigla){
-	
+
 		Centro centro = null;
-				
+
 		String strConsultar = "SELECT sigla, nome FROM centro "
 				+ "WHERE sigla = '" + sigla + "';"; 
 
-		ResultSet rs = conexao.consulte(strConsultar);
-		
+		rs = conexao.consulte(strConsultar);
+
 		if(rs != null){
-			try{ // entrar aqui significa que o ResultSet não é nulo, mas não implica
-				 // que ele possua registros
-				if (rs.next()){ // retorna false se puder moverse para o próximo regisro
-								// o problema estava aqui, como não há registro, next()
-								// retorna false, por isso só podemos istanciar o centro, 
-								// se o next() retornar true, indicando que tem um registro
+			try{ 
+				if (rs.next()){ 
 					centro = new Centro();
 					centro.setSigla(rs.getString(1));
 					centro.setNome(rs.getString(2));									
 				}
 			}catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 		return centro;
 	}
-	
-	public ArrayList<Centro>getTodosCentros(){
-		ArrayList<Centro>centros = new ArrayList<Centro>();
-		ResultSet rs = conexao.consulte("SELECT * FROM centro;");
-		ResultSetMetaData rsrs;
-		Centro centro =null;
+
+	public List<Centro> getTodosCentros(){
+
+		List<Centro> centros = new ArrayList<Centro>();
+		Centro centro = null;
+				
+		String strConsultar = "SELECT sigla, nome"
+				+ " FROM centro;"; 
+
+		rs = conexao.consulte(strConsultar);
 		
 		if(rs != null){
-			try{
-				centro = new Centro();
-				rsrs = (ResultSetMetaData) rs.getMetaData();
-				centro.setSigla(rsrs.getColumnLabel(1).toUpperCase());
-				centro.setNome(rsrs.getColumnLabel(2).toUpperCase());
-				centros.add(centro);
+			try{ 
 				while (rs.next()){
 					centro = new Centro();
 					centro.setSigla(rs.getString(1));
 					centro.setNome(rs.getString(2));
 					centros.add(centro);
-					
 				}
+			}catch(SQLException sqle){
+				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
+						JOptionPane.PLAIN_MESSAGE);
 			}
-			catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
-			}
-			
 		}
 		return centros;
 	}
-	
 }
+
+

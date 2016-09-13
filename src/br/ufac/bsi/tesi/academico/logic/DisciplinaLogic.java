@@ -1,6 +1,7 @@
 package br.ufac.bsi.tesi.academico.logic;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.DisciplinaDB;
@@ -71,8 +72,8 @@ private DisciplinaDB cdb = new DisciplinaDB();
 		return disciplina;
 	}
 
-	public ArrayList<Disciplina> lstDisciplina() {
-		ArrayList<Disciplina> disciplina = cdb.getTodasDisciplinas();
-		return disciplina;
-	}		
+	public List<Disciplina> getTodasDisciplinas() {
+		return cdb.getTodasDisciplinas();
+	}
+
 }

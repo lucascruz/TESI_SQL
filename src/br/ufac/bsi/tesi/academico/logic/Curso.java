@@ -17,5 +17,9 @@ public class Curso {
 		public void setCodigo(String codigo) {
 			this.codigo = codigo;
 		}
+		
+		public String toString(){
+			return this.nome;
+		}
 }
 
