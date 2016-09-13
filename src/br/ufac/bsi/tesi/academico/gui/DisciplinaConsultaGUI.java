@@ -37,7 +37,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		disciplinaLogic.setConexao(cnx);
 		
 		tblDisciplina = new JTable(0,0);
-		tblDisciplina.setToolTipText("Lista de disciplinaes!");		
+		tblDisciplina.setToolTipText("Lista de disciplinas!");		
 		tblDisciplina.setFocusable(false);
 		tblDisciplina.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
@@ -52,7 +52,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		pnlComandos = new JPanel(new GridLayout(2,1));
 		pnlOperacoes = new JPanel();
 
-		cmbCampos = new JComboBox(new String[]{"Matrícula", "Nome"});
+		cmbCampos = new JComboBox(new String[]{"Codigo", "Nome"});
 		fldValor = new JTextField();
 		
 		btnBuscar = new JButton("Buscar");

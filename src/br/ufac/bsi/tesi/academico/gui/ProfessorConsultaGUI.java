@@ -53,7 +53,7 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 		pnlComandos = new JPanel(new GridLayout(2,1));
 		pnlOperacoes = new JPanel();
 
-		cmbCampos = new JComboBox(new String[]{"Matrícula", "Nome"});
+		cmbCampos = new JComboBox(new String[]{"Matricula", "Nome"});
 		fldValor = new JTextField();
 		
 		btnBuscar = new JButton("Buscar");
@@ -137,7 +137,7 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 			professores = professorLogic.getTodosProfessores();
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
-				professores.add(professorLogic.getProfessor(Integer.parseInt(fldValor.getText())));
+				professores.add(professorLogic.getProfessorPorNome(fldValor.getText()));
 			else
 				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
 		

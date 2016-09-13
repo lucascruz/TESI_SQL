@@ -51,7 +51,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 		pnlComandos = new JPanel(new GridLayout(2,1));
 		pnlOperacoes = new JPanel();
 
-		cmbCampos = new JComboBox(new String[]{"Matrícula", "Nome"});
+		cmbCampos = new JComboBox(new String[]{"Codigo", "Nome"});
 		fldValor = new JTextField();
 		
 		btnBuscar = new JButton("Buscar");
