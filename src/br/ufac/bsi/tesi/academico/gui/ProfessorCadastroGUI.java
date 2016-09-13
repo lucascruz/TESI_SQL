@@ -53,7 +53,7 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		fldEndereco = new JTextField();		
 		fldFone = new JTextField();		
 
-		cmbCentro = new JComboBox(centroLogic.lstCentros().toArray());
+		cmbCentro = new JComboBox(centroLogic.getTodosCentros().toArray());
 		
 		pnlCampos = new JPanel(new GridLayout(7,1,5,5));
 		pnlCampos.add(fldMatricula);

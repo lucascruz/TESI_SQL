@@ -123,7 +123,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 
 	public void atualize(){
 		List<Centro> centros = new ArrayList<Centro>();
-		centros = centroLogic.lstCentros();
+		centros = centroLogic.getTodosCentros();
 		tblCentros.setModel(new CentroTableModel(centros));
 	}
 	public void buscar(){
@@ -168,7 +168,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 	}
 	public void Listar(){
 		List<Centro> centros = new ArrayList<Centro>();
-		centros = centroLogic.lstCentros();
+		centros = centroLogic.getTodosCentros();
 		
 		if(centros != null){
 			tblCentros.setModel(new CentroTableModel(centros));
