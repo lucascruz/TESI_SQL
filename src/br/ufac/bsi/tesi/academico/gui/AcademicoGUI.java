@@ -61,7 +61,7 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 		
 		
 		
-		mntmHelp = new JMenuItem("Help");
+		mntmHelp = new JMenuItem("Encontrou algum erro?");
 		mntmHelp.addActionListener(this);
 		mnSobre.add(mntmHelp);
 		
@@ -70,13 +70,18 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 			
 		mntmSair = new JMenuItem("Sair");
 		mntmSair.addActionListener(this);
-		mnSobre.add(mntmSair);
+		menuBar.add(mntmSair);
 		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == mntmSair){
+			try {
+				cnx.finalize();
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
 			System.exit(0);			
 		}
 		if (e.getSource() == mntmProfessor){
@@ -102,7 +107,7 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 		}
 
 		if(e.getSource()== mntmHelp){
-			JOptionPane.showMessageDialog(null, "Infelizmente não tem ajuda!", 
+			JOptionPane.showMessageDialog(null, "Report qualquer erro github.com/lucascruz = )!", 
 					"HELP", JOptionPane.PLAIN_MESSAGE);	
 		}
 	}
