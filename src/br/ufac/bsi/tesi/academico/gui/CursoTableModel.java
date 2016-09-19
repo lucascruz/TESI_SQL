@@ -1,34 +1,39 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.logic.*;
-import javax.swing.table.*;
-import java.util.*;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
+
+import br.ufac.bsi.tesi.academico.logic.Curso;
 
 @SuppressWarnings("serial")
-public class CursoTableModel extends AbstractTableModel {
+public class CursoTableModel extends AbstractTableModel{
 
-	private List<Curso> cursoes;
+	private List<Curso> cursos;
 
-	public CursoTableModel(List<Curso> cursoes) {
-
-		this.cursoes = cursoes;
-		
+	public CursoTableModel( List<Curso> cursos) {
+		this.cursos = cursos;	
 	}
 
-	public String getColumnName(int columnIndex) {
+	public String getColumnName(int columnIndex) throws NullPointerException{
 
 		String nomeDaColuna = null;
-		
+
 		switch(columnIndex) {
-			case 0:
-				nomeDaColuna = "Cod. Curso"; break;
-			case 1: 
-				nomeDaColuna = "Nome"; break;
-			default:
-				nomeDaColuna = null;
+		case 0:
+			try{
+				nomeDaColuna = "Codigo"; break;
+			}catch(NullPointerException e){
+				JOptionPane.showMessageDialog(null, "Codigo não cadastrado no banco de dados!", 
+						 "Consulta de curso", JOptionPane.PLAIN_MESSAGE);
+			}
+		case 1: 
+			nomeDaColuna = "Nome"; break;	
+		default:
+			nomeDaColuna = null;
 		}
-		return nomeDaColuna;		
-		
+		return nomeDaColuna;			
 	}
 
 	public Class<?> getColumnClass(int columnIndex) {
@@ -46,23 +51,23 @@ public class CursoTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return cursoes.size();
+		return cursos.size();
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		
-		Curso curso = cursoes.get(rowIndex);
+
+		Curso curso = cursos.get(rowIndex);
 		Object valor = null;
-		
+
 		switch(columnIndex) {
-			case 0:
-				valor = curso.getCodigo(); break;
-			case 1:		
-				valor = curso.getNome(); break;			
-			default:
-				valor = null; break;
+		case 0:
+			valor = curso.getCodigo(); break;
+		case 1:		
+			valor = curso.getNome(); break;				
+		default:
+			valor = null; break;
 		}
-		return valor;
-			
+		return valor;	
 	}
 }
+

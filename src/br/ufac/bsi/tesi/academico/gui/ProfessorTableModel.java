@@ -1,27 +1,25 @@
 package br.ufac.bsi.tesi.academico.gui;
 
 import br.ufac.bsi.tesi.academico.logic.*;
+
+import javax.swing.JOptionPane;
 import javax.swing.table.*;
 import java.util.*;
 
 @SuppressWarnings("serial")
 public class ProfessorTableModel extends AbstractTableModel {
-
 	private List<Professor> professores;
 
 	public ProfessorTableModel(List<Professor> professores) {
-
 		this.professores = professores;
-		
 	}
 
 	public String getColumnName(int columnIndex) {
-
 		String nomeDaColuna = null;
 		
 		switch(columnIndex) {
 			case 0:
-				nomeDaColuna = "Matrícula"; break;
+				nomeDaColuna = "Matricula"; break;
 			case 1: 
 				nomeDaColuna = "Nome"; break;
 			case 2: 
@@ -42,6 +40,12 @@ public class ProfessorTableModel extends AbstractTableModel {
 	}
 
 	public Class<?> getColumnClass(int columnIndex) {
+		try{
+			getValueAt(0, columnIndex).getClass();
+		}catch(NullPointerException e){
+			JOptionPane.showMessageDialog(null, "Nenhum professor cadastro possui o nome ou matricula buscado!", 
+					 "Consulta de Professor", JOptionPane.PLAIN_MESSAGE);
+		}
 		return getValueAt(0, columnIndex).getClass();
 	}
 
@@ -50,9 +54,7 @@ public class ProfessorTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-
 		return 7;
-
 	}
 
 	public int getRowCount() {
@@ -78,7 +80,7 @@ public class ProfessorTableModel extends AbstractTableModel {
 			case 5: 				
 				valor = professor.getFone(); break;
 			case 6: 
-				valor = professor.getCentro().getSigla(); break;				
+				valor = professor.getCentro().getSigla(); break; // SE DESEJAR PODE SER O NOME				
 			default:
 				valor = null; break;
 		}

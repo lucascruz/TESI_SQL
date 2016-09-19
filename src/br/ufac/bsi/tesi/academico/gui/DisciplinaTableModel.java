@@ -1,16 +1,19 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.logic.*;
-import javax.swing.table.*;
-import java.util.*;
+import java.util.List;
 
-@SuppressWarnings("serial")
+import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
+
+import br.ufac.bsi.tesi.academico.logic.Disciplina;
+
 public class DisciplinaTableModel extends AbstractTableModel {
 
 	private List<Disciplina> disciplinas;
+	private String[] colunas =   new String[] {"Codigo", "Nome", "Ch"};
+	private String[] TipoColuna =  {"String", "String", "String"};
 
 	public DisciplinaTableModel(List<Disciplina> disciplinas) {
-
 		this.disciplinas = disciplinas;
 		
 	}
@@ -34,7 +37,18 @@ public class DisciplinaTableModel extends AbstractTableModel {
 	}
 
 	public Class<?> getColumnClass(int columnIndex) {
-		return getValueAt(0, columnIndex).getClass();
+		String className;
+		try {
+			className = TipoColuna[columnIndex];
+			return Class.forName("java.lang."+ className);
+		}catch (ClassNotFoundException cnfe) {
+			JOptionPane.showMessageDialog(null, "ERRO", cnfe.getMessage(), 
+					JOptionPane.PLAIN_MESSAGE);
+		}catch (NullPointerException e){
+			JOptionPane.showMessageDialog(null, "Nenhuma disciplina cadastrada possui o codigo buscado!", 
+					 "Consulta de Disciplina", JOptionPane.PLAIN_MESSAGE);
+		}
+		return Object.class;
 	}
 
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -43,7 +57,7 @@ public class DisciplinaTableModel extends AbstractTableModel {
 
 	public int getColumnCount() {
 
-		return 7;
+		return 3;
 
 	}
 
@@ -58,7 +72,12 @@ public class DisciplinaTableModel extends AbstractTableModel {
 		
 		switch(columnIndex) {
 			case 0:
-				valor = disciplina.getCodigo(); break;
+				try{
+					valor = disciplina.getCodigo(); break;
+				}catch(NullPointerException e){
+					JOptionPane.showMessageDialog(null, "Nenhuma disciplina cadastrada possui codigo buscado!", 
+							 "Consulta de Professor", JOptionPane.PLAIN_MESSAGE);
+				}
 			case 1:		
 				valor = disciplina.getNome(); break;
 			case 2: 
@@ -66,7 +85,6 @@ public class DisciplinaTableModel extends AbstractTableModel {
 			default:
 				valor = null; break;
 		}
-		return valor;
-			
+		return valor;		
 	}
 }

@@ -1,8 +1,11 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.logic.*;
-import javax.swing.table.*;
-import java.util.*;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
+
+import br.ufac.bsi.tesi.academico.logic.Aluno;
 
 @SuppressWarnings("serial")
 public class AlunoTableModel extends AbstractTableModel {
@@ -21,19 +24,19 @@ public class AlunoTableModel extends AbstractTableModel {
 		
 		switch(columnIndex) {
 			case 0:
-				nomeDaColuna = "Matrícula"; break;
+				nomeDaColuna = "Matricula"; break;
 			case 1: 
 				nomeDaColuna = "Nome"; break;
 			case 2: 
-				nomeDaColuna = "RG"; break;
+				nomeDaColuna = "Cep"; break;
 			case 3: 
-				nomeDaColuna = "CPF"; break;
-			case 4: 
 				nomeDaColuna = "Endereço"; break;
+			case 4: 
+				nomeDaColuna = "Sexo"; break;
 			case 5: 
 				nomeDaColuna = "Fone"; break;
 			case 6: 
-				nomeDaColuna = "Centro"; break;	
+				nomeDaColuna = "Curso"; break;	
 			default:
 				nomeDaColuna = null;
 		}
@@ -41,7 +44,13 @@ public class AlunoTableModel extends AbstractTableModel {
 		
 	}
 
-	public Class<?> getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(int columnIndex) throws NullPointerException {
+		try{
+			getValueAt(0, columnIndex).getClass();
+		}catch(NullPointerException e){
+			JOptionPane.showMessageDialog(null, "Nenhum aluno cadastro possui o nome ou matricula buscado!", 
+					 "Consulta de Aluno", JOptionPane.PLAIN_MESSAGE);
+		}
 		return getValueAt(0, columnIndex).getClass();
 	}
 
@@ -72,11 +81,13 @@ public class AlunoTableModel extends AbstractTableModel {
 			case 2: 
 				valor = aluno.getCep(); break;
 			case 3: 
-				valor = aluno.getSexo(); break;
-			case 4: 
 				valor = aluno.getEndereco(); break;
+			case 4: 
+				valor =	aluno.getSexo(); break;
 			case 5: 				
-				valor = aluno.getFone(); break;		
+				valor = aluno.getFone(); break;
+			case 6: 
+				valor = aluno.getCurso().getNome(); break; // SE DESEJAR PODE SER O NOME				
 			default:
 				valor = null; break;
 		}
