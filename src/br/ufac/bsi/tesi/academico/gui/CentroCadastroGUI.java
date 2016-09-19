@@ -1,13 +1,16 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import javax.swing.*; 					
+import javax.swing.*;
+
+import br.ufac.bsi.tesi.academico.exception.*;
+
 import java.awt.*; 						
 import java.awt.event.*;
+import java.sql.SQLException;
 
 import br.ufac.bsi.tesi.academico.db.*;
 import br.ufac.bsi.tesi.academico.logic.*;
 
-@SuppressWarnings("serial")
 public class CentroCadastroGUI extends JFrame implements ActionListener {
 
 	private JPanel pnlControles, pnlOperacoes, pnlRotulos, pnlCampos;
@@ -18,19 +21,16 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private CentroConsultaGUI pai;
-	@SuppressWarnings("unused")
-	private Conexao cnx;
+	private Conexao cnx = Conexao.getInstacia();
 
 	private CentroLogic centroLogic = new CentroLogic();	
 
-	CentroCadastroGUI(CentroConsultaGUI pai, Conexao cnx){ 
-		super(""); 				// chamando construtor da classe mãe
-		setSize(600, 600);		// definindo dimensões da janela	
+	public CentroCadastroGUI(CentroConsultaGUI pai, Conexao cnx){ 
+		super(""); 				// chamando construtor da classe mÃ£e
+		setSize(600, 600);		// definindo dimensÃµes da janela	
 
 		this.pai = pai;
 		this.cnx = cnx;
-
-		centroLogic.setConexao(cnx);		
 
 		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};
 
@@ -66,7 +66,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		pack();
 		setLocationRelativeTo(null);
 
-	} //Fim do método construtor
+	} //Fim do mÃ©todo construtor
 
 	public void actionPerformed(ActionEvent e){
 
@@ -91,7 +91,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(String sigla){
+	public void editar(String sigla) throws SQLException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Centro");
 
@@ -102,7 +102,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(String sigla){
+	public void excluir(String sigla) throws SQLException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Centro");
 
@@ -114,7 +114,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String sigla){
+	public void carregarCampos(String sigla) throws SQLException{
 
 		Centro centro = centroLogic.getCentro(sigla);
 
@@ -128,20 +128,90 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 	}
 
 	public void confirmar(){
-		boolean confirmado;
+		boolean confirmado=true;
 
 		String sigla = fldSigla.getText();
 		String nome = fldNome.getText();
 		
 		switch (operacao) {
 		case 0:
-			confirmado = centroLogic.addCentro(sigla, nome);
+			try{
+				confirmado = centroLogic.addCentro(sigla, nome);
+			}catch(InvalidFieldException e){
+				JOptionPane.showMessageDialog(null, e, 
+						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(LenghtInvalidFieldException eoo){
+				JOptionPane.showMessageDialog(null, eoo, 
+						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(EntityAlreadyExistException exst){
+				JOptionPane.showMessageDialog(null, exst, 
+						"\nCentro Já Existe", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;
 		case 1:
-			confirmado = centroLogic.updCentro(sigla, nome);
+			try{
+				confirmado = centroLogic.updCentro(sigla, nome);
+			}catch(InvalidFieldException e){
+				JOptionPane.showMessageDialog(null, e, 
+						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(LenghtInvalidFieldException eoo){
+				JOptionPane.showMessageDialog(null, eoo, 
+						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"CENTRO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException chave) {
+				JOptionPane.showMessageDialog(null, chave, 
+						"ERRO CHAVE ESTRANGEIRA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;
 		case 2:
-			confirmado = centroLogic.delCentro(sigla, nome);
+			try{
+				confirmado = centroLogic.delCentro(sigla, nome);
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"CENTRO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException chave) {
+				JOptionPane.showMessageDialog(null, chave, 
+						"ERRO CHAVE ESTRANGEIRA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO: \n", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;			
 		default:
 			confirmado = false;
@@ -155,6 +225,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 			pai.atualize();
 		}else{
 			JOptionPane.showMessageDialog(this, "Falha na "+ operacoesNomes[operacao]+" do centro!", "Academico", JOptionPane.INFORMATION_MESSAGE);
+			confirmado = true;
 		}
 
 	}

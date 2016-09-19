@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 
@@ -27,8 +28,7 @@ public class Tela_Login extends JFrame {
 	private JTextField textField;
 	private JPasswordField passwordField;
 	private String usuario, senha;
-	private static final String urlDB = "jdbc:mysql://localhost/academico?useSSL=false";
-	private static Conexao cnx =  new Conexao();
+	private static Conexao cnx = Conexao.getInstacia();
 
 
 	public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class Tela_Login extends JFrame {
 		});
 	}
 	
-	public Tela_Login() {
+	public Tela_Login(){
 		setTitle("TABAJARA.SQL");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -88,11 +88,16 @@ public class Tela_Login extends JFrame {
 					char [] pass = passwordField.getPassword();
 					senha = new String (pass);
 					System.out.println(usuario+senha);
-					if (cnx.conecte(urlDB, usuario, senha)){
-						AcademicoGUI frame1 = new AcademicoGUI(cnx);
-						frame1.setVisible(true);
-						dispose();
-						System.out.println(cnx);}
+					try {
+						if (cnx.conecte(usuario, senha)){
+							AcademicoGUI frame1 = new AcademicoGUI();
+							frame1.setVisible(true);
+							dispose();
+							System.out.println(cnx);}
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -105,13 +110,20 @@ public class Tela_Login extends JFrame {
 				char [] pass = passwordField.getPassword();
 				senha = new String (pass);
 				System.out.println(usuario+senha);
-				if (cnx.conecte(urlDB, usuario, senha)){
-					AcademicoGUI frame1 = new AcademicoGUI(cnx);
-					frame1.setVisible(true);
-					dispose();
-					System.out.println(cnx);
+				try {
+					if (cnx.conecte(usuario, senha)){
+						
+						AcademicoGUI frame1 = new AcademicoGUI();
+						frame1.setVisible(true);
+						dispose();
+						System.out.println(Conexao.getInstacia());
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			//	cnx.desconecte();
+				System.out.println(Conexao.getInstacia());
 			}
 		});
 
@@ -122,7 +134,12 @@ public class Tela_Login extends JFrame {
 		JButton btnNewButton_1 = new JButton("SAIR");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cnx.desconecte();
+				try {
+					cnx.finalize();
+				} catch (Throwable e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				System.exit(0);
 			}			
 		});

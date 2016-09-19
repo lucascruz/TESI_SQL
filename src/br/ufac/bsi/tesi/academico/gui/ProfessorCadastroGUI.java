@@ -1,13 +1,16 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-
 import br.ufac.bsi.tesi.academico.db.*;
 import br.ufac.bsi.tesi.academico.logic.*;
-import javax.swing.*; 					//importando classes do Swing
-import java.awt.*; 						//importando classes do AWT
-import java.awt.event.*; 				//importando classes de EVENTOS do AWT
-@SuppressWarnings("serial")
-class ProfessorCadastroGUI extends JFrame implements ActionListener {
+import javax.swing.*; 					
+
+import br.ufac.bsi.tesi.academico.exception.*;
+
+import java.awt.*; 						
+import java.awt.event.*; 				
+import java.sql.SQLException;
+
+public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	int matricula =0, cpf=0, rg=0;
 	private JPanel pnlControles, pnlOperacoes, pnlRotulos, pnlCampos;
 	private JComboBox<Centro> cmbCentro;
@@ -18,22 +21,19 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private ProfessorConsultaGUI pai;
-	@SuppressWarnings("unused")
-	private Conexao cnx;
+	private Conexao cnx = Conexao.getInstacia();
 
 	private ProfessorLogic professorLogic = new ProfessorLogic();
 	private CentroLogic centroLogic = new CentroLogic();	
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	ProfessorCadastroGUI(ProfessorConsultaGUI pai, Conexao cnx){ // mÃ©todo construtor
+	public ProfessorCadastroGUI(ProfessorConsultaGUI pai, Conexao cnx) throws SQLException{ // mÃ©todo construtor
 		super(""); 				// chamando construtor da classe mÃ£e
 		setSize(600, 350);		// definindo dimensÃµes da janela	
 
 		this.pai = pai;
 		this.cnx = cnx;
 
-		professorLogic.setConexao(cnx);
-		centroLogic.setConexao(cnx);		
+	
 
 		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};
 
@@ -89,7 +89,12 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e){
 
 		if (e.getSource() == btnConfirmar){
-			confirmar();
+			try{
+				confirmar();
+			}catch(NumberFormatException eee){
+				JOptionPane.showMessageDialog(null, "Campo RG,CPF E MATRICULA PRECISAM SER NUMEROS E NÃO PODEM FICAR VAZIO", 
+						"Cadastro de Professor", JOptionPane.PLAIN_MESSAGE);	
+			}
 		}	
 
 		if (e.getSource() == btnCancelar){
@@ -119,7 +124,7 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(int matricula){
+	public void editar(int matricula) throws SQLException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Professor");
 
@@ -135,8 +140,7 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-
-	public void excluir(int matricula){
+	public void excluir(int matricula) throws SQLException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Professor");
 
@@ -152,7 +156,7 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(int matricula){
+	public void carregarCampos(int matricula) throws SQLException{
 
 		Professor professor = professorLogic.getProfessor(matricula);
 		Centro centro;
@@ -180,16 +184,11 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 
 	public void confirmar()throws NumberFormatException{
 		Centro centro;
-		boolean confirmado;
-		String camposNumericosInvalidos = "";
-		boolean teste = false;
-
-			matricula = Integer.parseInt(fldMatricula.getText());
-			rg = Integer.parseInt(fldRg.getText());
-			
-			cpf = Integer.parseInt(fldCpf.getText());
+		boolean confirmado=true;
+		matricula = Integer.parseInt(fldMatricula.getText());
+		rg = Integer.parseInt(fldRg.getText());
+		cpf = Integer.parseInt(fldCpf.getText());
 		
-
 		String nome = fldNome.getText();
 		String endereco = fldEndereco.getText();
 		String fone = fldFone.getText();
@@ -198,13 +197,91 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		
 		switch (operacao) {
 		case 0:
-			confirmado = professorLogic.addProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			try{
+				confirmado = professorLogic.addProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			}catch(InvalidFieldException e){
+				JOptionPane.showMessageDialog(null, e, 
+						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(LenghtInvalidFieldException eoo){
+				JOptionPane.showMessageDialog(null, eoo, 
+						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(NumberErroException number){
+				JOptionPane.showMessageDialog(null, number, 
+						"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(EntityAlreadyExistException exst){
+				JOptionPane.showMessageDialog(null, exst, 
+						"\nProfessor Já Existe", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;
 		case 1:
-			confirmado = professorLogic.updProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			try{
+				confirmado = professorLogic.updProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			}catch(InvalidFieldException e){
+				JOptionPane.showMessageDialog(null, e, 
+						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(LenghtInvalidFieldException eoo){
+				JOptionPane.showMessageDialog(null, eoo, 
+						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(NumberErroException number){
+				JOptionPane.showMessageDialog(null, number, 
+						"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"PROFESSOR NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;
 		case 2:
-			confirmado = professorLogic.delProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			try{
+				confirmado = professorLogic.delProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"PROFESSOR NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;			
 		default:
 			confirmado = false;
@@ -218,6 +295,7 @@ class ProfessorCadastroGUI extends JFrame implements ActionListener {
 			pai.atualize();
 		}else{
 			JOptionPane.showMessageDialog(this, operacoesNomes[operacao] +" de professor falhou", "Academico", JOptionPane.INFORMATION_MESSAGE);
+			confirmado = true;
 		}
 
 	}

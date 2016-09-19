@@ -1,12 +1,25 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.db.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+
+import br.ufac.bsi.tesi.academico.exception.*;
+import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.logic.*;
 
-import javax.swing.*; 					//importando classes do Swing
-import java.awt.*; 						//importando classes do AWT
-import java.awt.event.*; 				//importando classes de EVENTOS do AWT
-import java.util.ArrayList;
 
 class AlunoCadastroGUI extends JFrame implements ActionListener {
 
@@ -19,22 +32,20 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private AlunoConsultaGUI pai;
-	private Conexao cnx;
+	private Conexao cnx = Conexao.getInstacia();
 
 	private AlunoLogic alunoLogic = new AlunoLogic();
 	private CursoLogic cursoLogic = new CursoLogic();	
 
-	AlunoCadastroGUI(AlunoConsultaGUI pai, Conexao cnx){ // método construtor
-		super(""); 				// chamando construtor da classe mãe
-		setSize(800, 600);		// definindo dimensões da janela	
+	public AlunoCadastroGUI(AlunoConsultaGUI pai, Conexao cnx) throws SQLException{ 
+		super(""); 				
+		setSize(600, 350);	
 
 		this.pai = pai;
 		this.cnx = cnx;
+	
 
-		alunoLogic.setConexao(cnx);
-		cursoLogic.setConexao(cnx);		
-
-		operacoesNomes = new String[]{"Inclusão", "Edicação", "Exclusão"};
+		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};
 
 		pnlRotulos = new JPanel(new GridLayout(7,1,5,5));
 		pnlRotulos.add(new JLabel("Matricula"));
@@ -51,10 +62,8 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		fldSexo = new JTextField();
 		fldEndereco = new JTextField();		
 		fldFone = new JTextField();		
-		
 
 		cmbCurso = new JComboBox(cursoLogic.getTodosCursos().toArray());
-		
 		
 		pnlCampos = new JPanel(new GridLayout(7,1,5,5));
 		pnlCampos.add(fldMatricula);
@@ -86,7 +95,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		pack();
 		setLocationRelativeTo(null);
 
-	} //Fim do método construtor
+	} //Fim do mÃ©todo construtor
 
 	public void actionPerformed(ActionEvent e){
 
@@ -121,7 +130,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(String matricula){
+	public void editar(String matricula) throws SQLException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Aluno");
 
@@ -137,7 +146,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(String matricula){
+	public void excluir(String matricula) throws SQLException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Aluno");
 
@@ -153,7 +162,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String matricula){
+	public void carregarCampos(String matricula) throws SQLException{
 
 		Aluno aluno = alunoLogic.getAluno(matricula);
 		Curso curso;
@@ -182,7 +191,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	public void confirmar(){
 
 		Curso curso;
-		boolean confirmado;
+		boolean confirmado= true;
 		
 		String matricula = fldMatricula.getText();
 		String nome = fldNome.getText();
@@ -192,17 +201,95 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		String sexo = fldSexo.getText();
 
 		curso = (Curso)cmbCurso.getSelectedItem();
-		String cursoNome = curso.getNome();
+		String cursoNome = curso.getCodigo();
 		
 		switch (operacao) {
 		case 0:
-			confirmado = alunoLogic.addAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+				try{
+					confirmado = alunoLogic.addAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+				}catch(InvalidFieldException e){
+					JOptionPane.showMessageDialog(null, e, 
+							"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				}catch(LenghtInvalidFieldException eoo){
+					JOptionPane.showMessageDialog(null, eoo, 
+							"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				}catch(NumberErroException number){
+					JOptionPane.showMessageDialog(null, number, 
+							"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				}catch(EntityAlreadyExistException exst){
+					JOptionPane.showMessageDialog(null, exst, 
+							"\nAluno Já Existe", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				} catch (ParentHasChildrenException parente) {
+					JOptionPane.showMessageDialog(null, parente, 
+							"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				} catch (NomeInvalidoException nomee) {
+					JOptionPane.showMessageDialog(null, nomee, 
+							"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				} catch (SQLException sqle) {
+					JOptionPane.showMessageDialog(null, sqle, 
+							"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+					confirmado = false;
+				}
 			break;
 		case 1:
-			confirmado = alunoLogic.updAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+			try{
+				confirmado = alunoLogic.updAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+			}catch(InvalidFieldException e){
+				JOptionPane.showMessageDialog(null, e, 
+						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(LenghtInvalidFieldException eoo){
+				JOptionPane.showMessageDialog(null, eoo, 
+						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(NumberErroException number){
+				JOptionPane.showMessageDialog(null, number, 
+						"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"ALUNO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;
 		case 2:
-			confirmado = alunoLogic.delAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+			try{
+				confirmado = alunoLogic.delAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
+			}catch(EntityDontExistException jamais){
+				JOptionPane.showMessageDialog(null, jamais, 
+						"ALUNO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (ParentHasChildrenException parente) {
+				JOptionPane.showMessageDialog(null, parente, 
+						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (NomeInvalidoException nomee) {
+				JOptionPane.showMessageDialog(null, nomee, 
+						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			} catch (SQLException sqle) {
+				JOptionPane.showMessageDialog(null, sqle, 
+						"Erro de SQL", JOptionPane.PLAIN_MESSAGE);
+				confirmado = false;
+			}
 			break;			
 		default:
 			confirmado = false;
@@ -210,14 +297,17 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		}
 
 		if (confirmado){
-			JOptionPane.showMessageDialog(this, operacoesNomes[operacao]+ " de Aluno realizada com sucesso!", "Acadêmico", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, operacoesNomes[operacao]+ 
+				" de Aluno realizada com sucesso!", "Academico", JOptionPane.INFORMATION_MESSAGE);
 			setVisible(false);
 			pai.setVisible(true);
-			pai.buscar();
+			pai.atualize();
 		}else{
-			JOptionPane.showMessageDialog(this, "Falha ao incluir o aluno!", "Acadêmico", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, operacoesNomes[operacao] +
+			" de Aluno falhou" , "Academico", JOptionPane.INFORMATION_MESSAGE);
+			confirmado = true;
 		}
 
 	}
 
-}//Fim da classe AlunoCadastroGUI
+}

@@ -1,16 +1,18 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.db.*;
-import br.ufac.bsi.tesi.academico.logic.*;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*; 					//importando classes do swing
+import javax.swing.*;
 
-public class AlunoConsultaGUI extends JFrame implements ActionListener{
+import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.logic.*;
+
+class AlunoConsultaGUI extends JFrame implements ActionListener{
 
 	private JTable tblalunos;
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
@@ -18,25 +20,28 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 	private JTextField fldValor;
 	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
-	private Conexao cnx;
+	private Conexao cnx= Conexao.getInstacia();
 	private AcademicoGUI pai;	
 	private AlunoCadastroGUI pcgui;
 	private AlunoLogic alunoLogic;
-	
-	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
+
+	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx){
 		super("Consulta de Aluno");
-		setSize(800, 600); // chamando construtor da classe mãe
+		setSize(800, 600); 
 		setLocationRelativeTo(null);		
 
 		this.cnx = cnx;
 		this.pai = pai;
 
-		pcgui = new AlunoCadastroGUI(this, cnx);		
+		try {
+			pcgui = new AlunoCadastroGUI(this, cnx);
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage());	
+		}		
 		alunoLogic = new AlunoLogic();
-		alunoLogic.setConexao(cnx);
-		
+
 		tblalunos = new JTable(0,0);
-		tblalunos.setToolTipText("Lista de alunos!");		
+		tblalunos.setToolTipText("Lista de Alunos!");		
 		tblalunos.setFocusable(false);
 		tblalunos.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
@@ -51,7 +56,7 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		pnlComandos = new JPanel(new GridLayout(2,1));
 		pnlOperacoes = new JPanel();
 
-		cmbCampos = new JComboBox(new String[]{"Matrícula", "Nome"});
+		cmbCampos = new JComboBox(new String[]{"Matricula", "Nome"});
 		fldValor = new JTextField();
 		
 		btnBuscar = new JButton("Buscar");
@@ -96,8 +101,7 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		add(pnlControles, BorderLayout.NORTH);
 		add(pnlOperacoes, BorderLayout.SOUTH);
 
-   } //Fim do método construtor
-
+   }
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -121,22 +125,18 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 			sair();			
 		}
 		if(e.getSource() == btnListar){
-			listar();
+			Listar();
 		}
 		
 	}
 
-	public void buscar(){
-
+	public void Listar(){
 		List<Aluno> alunos = new ArrayList<Aluno>();
-
-		if (fldValor.getText().equals(""))
+		try {
 			alunos = alunoLogic.getTodosAlunos();
-		else	
-			if(cmbCampos.getSelectedIndex() == 0)
-				alunos.add(alunoLogic.getAluno(fldValor.getText()));
-			else
-				;// DEVERÁ CONSIDERAR O NOME E REALIZAR A CONSULTA COM O MÉTODO CORRESPODENTE
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 		
 		if(alunos != null){
 			tblalunos.setModel(new AlunoTableModel(alunos));
@@ -145,9 +145,49 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
 					 "Consulta de Aluno", JOptionPane.PLAIN_MESSAGE);	
 		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
+	}
+	public void atualize(){
+		List<Aluno> alunos = new ArrayList<Aluno>();
+		try {
+			alunos = alunoLogic.getTodosAlunos();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
+		tblalunos.setModel(new AlunoTableModel(alunos));
+	}
+	public void buscar(){
+
+		List<Aluno> alunos = new ArrayList<Aluno>();
+		if (fldValor.getText().equals(""))
+			JOptionPane.showMessageDialog(null, "Você não digitou uma matricula", 
+					 "Consulta de Professor FALHA", JOptionPane.PLAIN_MESSAGE);	
+		else
+			if(cmbCampos.getSelectedIndex() == 0)
+				try{
+					alunos.add(alunoLogic.getAluno(fldValor.getText()));
+				}catch(NumberFormatException e){
+					JOptionPane.showMessageDialog(null, "A matricula apenas pode conter Numeros!!!!", 
+							 "Consulta de Professor FALHA", JOptionPane.PLAIN_MESSAGE);
+				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());	
+				}
+			else
+				if (fldValor.getText().equals(""))
+					JOptionPane.showMessageDialog(null, "Você não digitou um nome", 
+							 "Consulta de Professor FALHA", JOptionPane.PLAIN_MESSAGE);
+				else	
+					if(cmbCampos.getSelectedIndex() == 1)
+						try {
+							alunos.add(alunoLogic.getAluno(fldValor.getText()));
+						} catch (SQLException e) {
+							JOptionPane.showMessageDialog(null, e.getMessage());	
+						}
+		
 		tblalunos.setModel(new AlunoTableModel(alunos));
 		btnEditar.setEnabled(false);
-		btnExcluir.setEnabled(false);			
+		btnExcluir.setEnabled(false);		
 	}
 
 	public void incluir(){
@@ -155,47 +195,33 @@ public class AlunoConsultaGUI extends JFrame implements ActionListener{
 		pcgui.incluir();
 	}
 
-	public void editar(){
-		String matricula;
-		
-		matricula = tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
-				0).toString();
+	public void editar(){	
+		String matricula = (tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
+				0).toString());
 		
 		setVisible(false);
-		pcgui.editar(matricula);
+		try {
+			pcgui.editar(matricula);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 	}
 
 	public void excluir(){
-		String matricula;
-		
-		matricula = tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
-				0).toString();
+		String matricula = (tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
+				0).toString());
 		
 		setVisible(false);
-		pcgui.excluir(matricula);
+		try {
+			pcgui.excluir(matricula);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 	}	
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
 	}
-	
-	public void listar(){
-		List<Aluno> alunos = new ArrayList<Aluno>();
-		alunos = alunoLogic.getTodosAlunos();
-		
-		if(alunos != null){
-			tblalunos.setModel(new AlunoTableModel(alunos));
-		}else{
-			tblalunos.setModel(null);
-			 JOptionPane.showMessageDialog(null, "Não produziu resultados sua pesquisa!", 
-					 "Consulta de Aluno", JOptionPane.PLAIN_MESSAGE);	
-		}
-		btnEditar.setEnabled(false);
-		btnExcluir.setEnabled(false);
-	}
 
-}//Fim da classe AlunoConsultaGUI
-
-
-
+}

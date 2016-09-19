@@ -31,7 +31,7 @@ public class CentroTableModel extends AbstractTableModel {
 		
 	}
 
-	public Class<?> getColumnClass(int columnIndex) {
+	public Class <?> getColumnClass(int columnIndex) {
 		return getValueAt(0, columnIndex).getClass();
 	}
 

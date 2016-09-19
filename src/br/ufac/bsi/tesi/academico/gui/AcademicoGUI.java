@@ -5,7 +5,6 @@ import br.ufac.bsi.tesi.academico.db.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-@SuppressWarnings("serial")
 public class AcademicoGUI extends JFrame implements ActionListener{
 
 	ProfessorConsultaGUI professorConsultaGUI;
@@ -17,18 +16,19 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 	private JMenuItem mntmProfessor, mntmCentro, mntmCurso, mntmDisciplina, mntmAluno, mntmHelp;
 	private JSeparator separator;
 	private JMenuItem mntmSair;
+	protected Conexao cnx = Conexao.getInstacia();
 
-	public AcademicoGUI(Conexao cnx) {
+	public AcademicoGUI() {
 		setTitle("Controle Academico");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
 		setLocationRelativeTo(null);
 
 		professorConsultaGUI = new ProfessorConsultaGUI(this, cnx);		
-		centroConsultaGUI = new CentroConsultaGUI(this, cnx);
-		cursoConsultaGUI = new CursoConsultaGUI(this, cnx);
-		disciplinaConsultaGUI = new DisciplinaConsultaGUI(this, cnx);
-		alunoConsultaGui = new AlunoConsultaGUI (this, cnx);
+		centroConsultaGUI = new CentroConsultaGUI(this,cnx);
+		cursoConsultaGUI = new CursoConsultaGUI(this,cnx);
+		disciplinaConsultaGUI = new DisciplinaConsultaGUI(this,cnx);
+		alunoConsultaGui = new AlunoConsultaGUI (this,cnx);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

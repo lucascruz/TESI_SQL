@@ -5,28 +5,29 @@ import br.ufac.bsi.tesi.academico.logic.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
 
-import javax.swing.*; 					//importando classes do swing
 
 public class CentroConsultaGUI extends JFrame implements ActionListener{
-
 	private JTable tblCentros;
 	private JPanel pnlControles, pnlRotulos, pnlCampos, pnlComandos, pnlOperacoes;
 	private JComboBox<String> cmbCampos;
 	private JTextField fldValor;
-	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir;
+	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
-	private Conexao cnx;
+	private Conexao cnx = Conexao.getInstacia();
 	private AcademicoGUI pai;	
 	private CentroCadastroGUI centroGUI;
 	private CentroLogic centroLogic;
+	
 
 
-	public CentroConsultaGUI(AcademicoGUI pai, Conexao cnx){ // método construtor
+	public CentroConsultaGUI(AcademicoGUI pai, Conexao cnx){ 
 		super("Consulta de Centro");
-		setSize(800, 600); // chamando construtor da classe mãe
+		setSize(800, 600); 
 		setLocationRelativeTo(null);		
 
 		this.cnx = cnx;
@@ -34,10 +35,9 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 
 		centroGUI = new CentroCadastroGUI(this, cnx);		
 		centroLogic = new CentroLogic();
-		centroLogic.setConexao(cnx);
 		
 		tblCentros = new JTable(0,0);
-		tblCentros.setToolTipText("Lista de centroes!");		
+		tblCentros.setToolTipText("Lista de Centros!");		
 		tblCentros.setFocusable(false);
 		tblCentros.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e){
@@ -71,6 +71,9 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(this);
 		btnExcluir.setEnabled(false);
+		
+		btnListar = new JButton("Listar");
+		btnListar.addActionListener(this);
 
 		pnlRotulos.add(new JLabel("Buscar por"));
 		pnlRotulos.add(new JLabel("Chave de busca"));		
@@ -87,14 +90,14 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 
 		pnlOperacoes.add(btnIncluir);
 		pnlOperacoes.add(btnEditar);		
-		pnlOperacoes.add(btnExcluir);		
+		pnlOperacoes.add(btnExcluir);
+		pnlOperacoes.add(btnListar);
 		
 		add(new JScrollPane(tblCentros));
 		add(pnlControles, BorderLayout.NORTH);
 		add(pnlOperacoes, BorderLayout.SOUTH);
 
-   } //Fim do método construtor
-
+   } 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -116,14 +119,38 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		
 		if (e.getSource() == btnSair){
 			sair();			
-		}		
+		}
+		if(e.getSource() == btnListar){
+			Listar();
+		}
 		
 	}
 
-
+	public void Listar(){
+		List<Centro> centros = new ArrayList<Centro>();
+		try {
+			centros = centroLogic.getTodosCentros();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
+		
+		if(centros != null){
+			tblCentros.setModel(new CentroTableModel(centros));
+		}else{
+			tblCentros.setModel(null);
+			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
+					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
+		}
+		btnEditar.setEnabled(false);
+		btnExcluir.setEnabled(false);
+	}
 	public void atualize(){
 		List<Centro> centros = new ArrayList<Centro>();
-		centros = centroLogic.getTodosCentros();
+		try {
+			centros = centroLogic.getTodosCentros();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 		tblCentros.setModel(new CentroTableModel(centros));
 	}
 	public void buscar(){
@@ -135,7 +162,11 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
 		else	
 			if(cmbCampos.getSelectedIndex() == 0)
-				centros.add(centroLogic.getCentro(fldValor.getText()));
+				try {
+					centros.add(centroLogic.getCentro(fldValor.getText()));
+				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage());	
+				}
 			
 		tblCentros.setModel(new CentroTableModel(centros));
 		btnEditar.setEnabled(false);
@@ -151,7 +182,11 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		String sigla = (tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 0).toString());
 		
 		setVisible(false);
-		centroGUI.editar(sigla);
+		try {
+			centroGUI.editar(sigla);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 	}
 
 	public void excluir(){	
@@ -159,29 +194,16 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 				0).toString());
 		
 		setVisible(false);
-		centroGUI.excluir(sigla);
+		try {
+			centroGUI.excluir(sigla);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());	
+		}
 	}	
 	
 	private void sair(){
 		setVisible(false);
 		pai.setVisible(true);
 	}
-	public void Listar(){
-		List<Centro> centros = new ArrayList<Centro>();
-		centros = centroLogic.getTodosCentros();
-		
-		if(centros != null){
-			tblCentros.setModel(new CentroTableModel(centros));
-		}else{
-			tblCentros.setModel(null);
-			 JOptionPane.showMessageDialog(null, "Sua consulta não produziu resultados!", 
-					 "Consulta de Centro", JOptionPane.PLAIN_MESSAGE);	
-		}
-		btnEditar.setEnabled(false);
-		btnExcluir.setEnabled(false);
-	}
 
-}//Fim da classe CentroConsultaGUI
-
-
-
+}

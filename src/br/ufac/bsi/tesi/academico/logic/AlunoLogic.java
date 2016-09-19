@@ -1,31 +1,103 @@
 package br.ufac.bsi.tesi.academico.logic;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
+
+import br.ufac.bsi.tesi.academico.exception.*;
 
 import br.ufac.bsi.tesi.academico.db.AlunoDB;
 import br.ufac.bsi.tesi.academico.db.Conexao;
 
 public class AlunoLogic {
 	private AlunoDB cdb = new AlunoDB();
+	private CursoLogic cursoLogic = new CursoLogic();
+	private Conexao conexao = Conexao.getInstacia();
 
-	public void setConexao(Conexao conexao){
-		cdb.setConexao(conexao);
-	}
 
 	public boolean addAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_codigo){
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, NumberErroException, LenghtInvalidFieldException, EntityAlreadyExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
 		Aluno aluno = null;
+		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "", entidadeJaExiste = "Aluno: ";
+		boolean falha = false, falhaNumero = false, falhaMax = false;
+		Curso curso = null;
+		
+		try {
+			int teste = Integer.parseInt(matricula);
+		} catch (NumberFormatException e) {
+			camposNumericosInvalidos = " Codigo Não pode ser letras!!\n";
+			falhaNumero = true;
+		}
+		
+		if (matricula.isEmpty()){
+			camposInvalidos = camposInvalidos + "Matricula Vazia\n ";
+			falha = true;
+		}
 
-		if (nome.isEmpty() || matricula.isEmpty()|| endereco.isEmpty()||curso_codigo.isEmpty()
-				||fone.isEmpty()||cep.isEmpty()||sexo.isEmpty())
-			return false;
+		if (nome.isEmpty()){
+			camposInvalidos = camposInvalidos + "Nome esta Vazio!\n";
+			falha = true;
+		}
+		if (fone.isEmpty()){
+			camposInvalidos = camposInvalidos + "Telefone está Vazio!\n";
+			falha = true;
+		}
+		if (cep.isEmpty()){
+			camposInvalidos = camposInvalidos + "Cep está vazio!\n";
+			falha = true;
+		}
+
+		if (endereco.isEmpty()){
+			camposInvalidos = camposInvalidos + "Endereco está Vazio!\n";
+			falha = true;
+		}
+		if (sexo.isEmpty()){
+			camposInvalidos = camposInvalidos + "Sexo está Vazio !\n";
+			falha = true;
+		}
+		
+		if (matricula.length()>10){
+			camposInvalidosMax  = camposInvalidosMax  + "Matricula Ultrapassou o limite max de digitos (Limite max 10)\n";
+			falhaMax = true;
+		}
+		
+		if (nome.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Nome Ultrapassou o limite max de caracteres (Limite max 45)\n";
+			falhaMax = true;
+		}
+		if (fone.length()>11){
+			camposInvalidosMax  = camposInvalidosMax  + "O telefone Ultrapassou o limite max de caracteres (Limite max 3)\n";
+			falhaMax = true;
+		}
+		if (endereco.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Endereço Ultrapassou o limite max de digitos (Limite max 45)\n";
+			falhaMax = true;
+		}
+		
+		if (cep.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Cep Ultrapassou o limite max de caracteres (Limite max 7)\n";
+			falhaMax = true;
+		}
+		if (sexo.length()>1){
+			camposInvalidosMax  = camposInvalidosMax  + "O sexo só pode ter 1 caracter (M ou F por exemplo) \n";
+			falhaMax = true;
+		}
+		
+		if (falha)
+			throw new InvalidFieldException(camposInvalidos);
+		
+		if(falhaNumero)
+			throw new NumberErroException(camposNumericosInvalidos);
+		
+		if(falhaMax)
+			throw new LenghtInvalidFieldException(camposInvalidosMax);
 
 		if (!matricula.isEmpty())
 			aluno = cdb.getAluno(matricula);
 
-		if (aluno != null)
-			return false;
+		if (aluno != null){
+			entidadeJaExiste = entidadeJaExiste + "Matricula: "+aluno.getMatricula()+"\nNome: "+aluno.getNome();
+			throw new EntityAlreadyExistException(entidadeJaExiste);
+		}
 		else
 			aluno = new Aluno();
 		aluno.setMatricula(matricula);
@@ -34,35 +106,117 @@ public class AlunoLogic {
 		aluno.setEndereco(endereco);
 		aluno.setCep(cep);
 		aluno.setSexo(sexo);
+
+		curso = cursoLogic.getCurso(curso_nome);
+		if (curso != null){
+			aluno.setCurso(curso);
+		}	
 		return cdb.addAluno(aluno);
 	}
+	@SuppressWarnings("unused")
 	public boolean updAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_codigo){
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, LenghtInvalidFieldException, NumberErroException, EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
 		Aluno aluno = null;
+		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "",entidadeNaoExist = "Aluno não existe no banco de dados";
+		boolean falha = false, falhaNumero = false, falhaMax = false;
+		Curso curso = null;
+		
+		try {
+			int teste = Integer.parseInt(matricula);
+		} catch (NumberFormatException e) {
+			camposNumericosInvalidos = " Codigo Não pode ser letras!!\n";
+			falhaNumero = true;
+		}
+		
+		if (matricula.isEmpty()){
+			camposInvalidos = camposInvalidos + "Matricula Vazia\n ";
+			falha = true;
+		}
 
-		if (nome.isEmpty() || matricula.isEmpty()|| endereco.isEmpty()||curso_codigo.isEmpty()
-				||fone.isEmpty()||cep.isEmpty()||sexo.isEmpty())
-			return false;
+		if (nome.isEmpty()){
+			camposInvalidos = camposInvalidos + "Nome esta Vazio!\n";
+			falha = true;
+		}
+		if (fone.isEmpty()){
+			camposInvalidos = camposInvalidos + "Telefone está Vazio!\n";
+			falha = true;
+		}
+		if (cep.isEmpty()){
+			camposInvalidos = camposInvalidos + "Cep está vazio!\n";
+			falha = true;
+		}
+
+		if (endereco.isEmpty()){
+			camposInvalidos = camposInvalidos + "Endereco está Vazio!\n";
+			falha = true;
+		}
+		if (sexo.isEmpty()){
+			camposInvalidos = camposInvalidos + "Sexo está Vazio !\n";
+			falha = true;
+		}
+		
+		if (matricula.length()>10){
+			camposInvalidosMax  = camposInvalidosMax  + "Matricula Ultrapassou o limite max de digitos (Limite max 10)\n";
+			falhaMax = true;
+		}
+		
+		if (nome.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Nome Ultrapassou o limite max de caracteres (Limite max 45)\n";
+			falhaMax = true;
+		}
+		if (fone.length()>11){
+			camposInvalidosMax  = camposInvalidosMax  + "O telefone Ultrapassou o limite max de caracteres (Limite max 3)\n";
+			falhaMax = true;
+		}
+		if (endereco.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Endereço Ultrapassou o limite max de digitos (Limite max 45)\n";
+			falhaMax = true;
+		}
+		
+		if (cep.length()>45){
+			camposInvalidosMax  = camposInvalidosMax  + "Cep Ultrapassou o limite max de caracteres (Limite max 7)\n";
+			falhaMax = true;
+		}
+		if (sexo.length()>1){
+			camposInvalidosMax  = camposInvalidosMax  + "O sexo só pode ter 1 caracter (M ou F por exemplo) \n";
+			falhaMax = true;
+		}
+		
+		if (falha)
+			throw new InvalidFieldException(camposInvalidos);
+		
+		if(falhaNumero)
+			throw new NumberErroException(camposNumericosInvalidos);
+		
+		if(falhaMax)
+			throw new LenghtInvalidFieldException(camposInvalidosMax);
 
 		if (!matricula.isEmpty())
 			aluno = cdb.getAluno(matricula);
 
 		if (aluno == null)
-			return false;
+			throw new EntityDontExistException(entidadeNaoExist);
 		else
 			aluno.setNome(nome);
 		aluno.setFone(fone);
 		aluno.setEndereco(endereco);
 		aluno.setCep(cep);
 		aluno.setSexo(sexo);
+
+		curso = cursoLogic.getCurso(curso_nome);
+
+		if (curso != null){
+			aluno.setCurso(curso);
+		}	
 		return cdb.updAluno(aluno);
 	}
 
 	public boolean delAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_codigo){
+			String cep, String sexo, String curso_nome)throws EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
 		Aluno aluno = null;
-
-		if (nome.isEmpty() || matricula.isEmpty()|| endereco.isEmpty()||curso_codigo.isEmpty()
+		Curso curso = null;
+		String entidadeNaoExist = "Aluno não existe no banco de dados";
+		if (nome.isEmpty() || matricula.isEmpty()|| endereco.isEmpty()||curso_nome.isEmpty()
 				||fone.isEmpty()||cep.isEmpty()||sexo.isEmpty())
 			return false;
 
@@ -70,12 +224,25 @@ public class AlunoLogic {
 			aluno = cdb.getAluno(matricula);
 
 		if (aluno == null)
-			return false;
+			throw new EntityDontExistException(entidadeNaoExist);
 		else
-			return cdb.delAluno(aluno);
+			aluno = new Aluno();
+		aluno.setMatricula(matricula);
+		aluno.setNome(nome);
+		aluno.setCep(cep);
+		aluno.setEndereco(endereco);
+		aluno.setFone(fone);
+		aluno.setSexo(sexo);
+
+		curso = cursoLogic.getCurso(curso_nome);
+
+		if (curso != null){
+			aluno.setCurso(curso);
+		}	
+		return cdb.delAluno(aluno);
 	}
 
-	public Aluno getAluno(String matricula){
+	public Aluno getAluno(String matricula) throws SQLException{
 		Aluno aluno = null;
 
 		if (!matricula.isEmpty())
@@ -84,7 +251,7 @@ public class AlunoLogic {
 		return aluno;
 	}
 
-	public List<Aluno> getTodosAlunos() {
+	public List<Aluno> getTodosAlunos() throws SQLException {
 		return cdb.getTodosAlunos();
 	}		
 }

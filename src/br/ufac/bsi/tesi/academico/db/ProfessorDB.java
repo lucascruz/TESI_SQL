@@ -7,22 +7,23 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import br.ufac.bsi.tesi.academico.exception.*;
+
+
 import br.ufac.bsi.tesi.academico.logic.Centro;
 import br.ufac.bsi.tesi.academico.logic.Professor;
 import br.ufac.bsi.tesi.academico.db.CentroDB;
 
 public class ProfessorDB {
 
-	private Conexao conexao;
+	private Conexao conexao = Conexao.getInstacia();
+
 	private CentroDB cdb = new CentroDB();
 	private ResultSet rs; 
 	
-	public void setConexao(Conexao conexao){
-		this.conexao = conexao;
-		cdb.setConexao(conexao);
-	}
 
-	public boolean addProfessor(Professor professor){
+
+	public boolean addProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, centro_sigla) "
 				+ "VALUES (" +
 				+ professor.getMatricula() +", '" 
@@ -33,11 +34,22 @@ public class ProfessorDB {
 				+ professor.getFone() + "', '"
 				+ professor.getCentro().getSigla() + "');";
 						
-		return (conexao.atualize(strIncluir)>0);
-
+		try{		
+			return (conexao.atualize(strIncluir)>0);
+		}catch(SQLException sqle){
+			switch (sqle.getErrorCode()){
+			case 1062 :
+				throw new EntityAlreadyExistException("Professor: " + professor.getMatricula());
+			case 1451 :
+				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "possui chaves estrangeiras vinculada!");
+			case 1474:
+				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+			}
+			
+		}
+		return false;
 	}
-	
-	public boolean updProfessor(Professor professor){
+	public boolean updProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
 		String strEditar = "UPDATE professor "
 				+ "SET nome = '" + professor.getNome() +"', "
 				+ "    rg = '" + professor.getRg() + "', "
@@ -47,19 +59,44 @@ public class ProfessorDB {
 				+ "    centro_sigla = '" + professor.getCentro().getSigla() + "' "
 				+ "WHERE matricula = " + professor.getMatricula() + ";";
 		
-		return (conexao.atualize(strEditar)>0);
-
+		try {
+			return (conexao.atualize(strEditar)>0);
+		} catch (SQLException sqle) {
+			switch (sqle.getErrorCode()){
+			case 1244 :
+				throw new EntityDontExistException("Professor: " + professor.getMatricula());
+			case 1451 :// essa n tem chave estangeira mas como é uma disciplina acredito que futuramente pode ser feita
+				//uma chave assim para ela
+				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "Possui chave estrangeira vinculada!");
+			case 1474:
+				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+			}
+		}
+		
+		return false;
 	}
-	
-	public boolean delProfessor(Professor professor){
+	public boolean delProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
 		String strExcluir = "DELETE FROM professor "
 				+ "WHERE matricula = " + professor.getMatricula() + ";";
 		
-		return (conexao.atualize(strExcluir)>0);
 
+		try {
+			return (conexao.atualize(strExcluir)>0);
+		}catch (SQLException sqle) {
+			switch (sqle.getErrorCode()){
+			case 1244 :
+				throw new EntityDontExistException("Professor: " + professor.getMatricula());
+			case 1451 :
+				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "Possui chave estrangeira vinculada!");
+			case 1474:
+				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+			}
+		}
+		
+		return false;
 	}
 	
-	public Professor getProfessor(int matricula){
+	public Professor getProfessor(int matricula) throws SQLException{
 	
 		Professor professor = null;
 		Centro centro = null;
@@ -89,21 +126,23 @@ public class ProfessorDB {
 					
 				}
 			}catch(SQLException sqle){
-				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
-						JOptionPane.PLAIN_MESSAGE);
+				switch (sqle.getErrorCode()){
+				case 1244 :
+					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+				}
 			}
 		}
 		return professor;
 	}
 	
 
-	public Professor getProfessoresPorNome(String nome){
+	public Professor getProfessoresPorNome(String nome) throws SQLException{
 		Professor professor = null;
 		Centro centro = null;
 				
 		String strConsultar = "SELECT matricula, nome, rg, cpf, endereco, fone, centro_sigla"
 				+ " FROM professor "
-				+ " WHERE nome = " + nome + ";"; 
+				+ " where nome = " + nome + ";"; 
 
 		rs = conexao.consulte(strConsultar);
 		
@@ -126,14 +165,16 @@ public class ProfessorDB {
 					
 				}
 			}catch(SQLException sqle){
-				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
-						JOptionPane.PLAIN_MESSAGE);
+				switch (sqle.getErrorCode()){
+				case 1244 :
+					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+				}
 			}
 		}
 		return professor;
 	}
 
-	public List<Professor> getTodosProfessores(){
+	public List<Professor> getTodosProfessores() throws SQLException{
 
 		List<Professor> professores = new ArrayList<Professor>();
 		Professor professor = null;
@@ -163,8 +204,10 @@ public class ProfessorDB {
 					professores.add(professor);
 				}
 			}catch(SQLException sqle){
-				JOptionPane.showMessageDialog(null, sqle.getErrorCode(), sqle.getMessage(), 
-						JOptionPane.PLAIN_MESSAGE);
+				switch (sqle.getErrorCode()){
+				case 1244 :
+					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+				}
 			}
 		}
 		return professores;

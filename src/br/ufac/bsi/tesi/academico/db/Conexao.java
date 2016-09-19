@@ -4,26 +4,29 @@ import java.sql.*;
 
 //Classe Conexao
 public class Conexao {
-	private Connection con = null;
+	private static Connection con = null;
 	private boolean conectado = false;
 	private Statement smt = null;
+	private static Conexao instacia = new Conexao();
+	private static final String urlDB = "jdbc:mysql://localhost/academico?useSSL=false";
+	
+	
+	private Conexao (){
+	}
 	
 	// Método para conectar-se ao banco
-	public boolean conecte(String urlDb, String userName, String userPasswd){
+	public boolean conecte(String userName, String userPasswd) throws SQLException{
 		try {
-			con = DriverManager.getConnection(urlDb, userName, userPasswd);
-			System.out.printf("Conexão com o banco efetuada!\n");
+			con = DriverManager.getConnection(urlDB, userName, userPasswd);
 			conectado = true;
 		}catch(SQLException sqle){
-			System.out.printf("Erro: #%d [%s]\n", 
-					sqle.getErrorCode(), sqle.getMessage());
 			conectado = false;
 		}
 		return conectado;
 	}
 
 	// Método para desconectar-se ao banco
-	public boolean desconecte(){
+	public boolean desconecte() throws SQLException{
 		if (conectado){
 			try {
 				con.close();
@@ -39,7 +42,7 @@ public class Conexao {
 		return conectado;
 	}
 
-	public ResultSet consulte(String strQuery){
+	public ResultSet consulte(String strQuery) throws SQLException{
 
 		if (conectado){
 			try{
@@ -55,7 +58,7 @@ public class Conexao {
 		return null;
 	}
 
-	public int atualize(String sqlUpdate){
+	public int atualize(String sqlUpdate) throws SQLException{
 
 		if (conectado){		
 			try {
@@ -72,4 +75,19 @@ public class Conexao {
 		return 0;
 	}
 
+	public static Conexao getInstacia() {
+		if (instacia == null)
+			synchronized (Conexao.class) {
+				 if (instacia == null) {
+		                instacia = new Conexao();
+		            }
+	        }
+		return instacia;
+	}
+	
+	public void finalize() throws Throwable {
+		if (instacia != null) {
+			desconecte();
+		}
+	}
 }//Fim da classe Conexao
