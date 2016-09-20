@@ -2,15 +2,28 @@ package br.ufac.bsi.tesi.academico.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
-import br.ufac.bsi.tesi.academico.logic.*;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.logic.Aluno;
+import br.ufac.bsi.tesi.academico.logic.AlunoLogic;
 
 class AlunoConsultaGUI extends JFrame implements ActionListener{
 
@@ -44,6 +57,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		tblalunos.setToolTipText("Lista de Alunos!");		
 		tblalunos.setFocusable(false);
 		tblalunos.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e){
 				btnEditar.setEnabled(true);
 				btnExcluir.setEnabled(true);
@@ -125,12 +139,17 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 			sair();			
 		}
 		if(e.getSource() == btnListar){
-			Listar();
+			try {
+				Listar();
+			} catch (InvalidNameException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 	}
 
-	public void Listar(){
+	public void Listar() throws InvalidNameException{
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		try {
 			alunos = alunoLogic.getTodosAlunos();
@@ -148,7 +167,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
 	}
-	public void atualize(){
+	public void atualize() throws InvalidNameException{
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		try {
 			alunos = alunoLogic.getTodosAlunos();

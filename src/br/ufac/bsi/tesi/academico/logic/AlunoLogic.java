@@ -3,10 +3,15 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.ufac.bsi.tesi.academico.exception.*;
-
 import br.ufac.bsi.tesi.academico.db.AlunoDB;
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.NumberErroException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 
 public class AlunoLogic {
 	private AlunoDB cdb = new AlunoDB();
@@ -15,7 +20,7 @@ public class AlunoLogic {
 
 
 	public boolean addAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws InvalidFieldException, NumberErroException, LenghtInvalidFieldException, EntityAlreadyExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, NumberErroException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Aluno aluno = null;
 		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "", entidadeJaExiste = "Aluno: ";
 		boolean falha = false, falhaNumero = false, falhaMax = false;
@@ -89,7 +94,7 @@ public class AlunoLogic {
 			throw new NumberErroException(camposNumericosInvalidos);
 		
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!matricula.isEmpty())
 			aluno = cdb.getAluno(matricula);
@@ -115,7 +120,7 @@ public class AlunoLogic {
 	}
 	@SuppressWarnings("unused")
 	public boolean updAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws InvalidFieldException, LenghtInvalidFieldException, NumberErroException, EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Aluno aluno = null;
 		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "",entidadeNaoExist = "Aluno não existe no banco de dados";
 		boolean falha = false, falhaNumero = false, falhaMax = false;
@@ -189,13 +194,13 @@ public class AlunoLogic {
 			throw new NumberErroException(camposNumericosInvalidos);
 		
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!matricula.isEmpty())
 			aluno = cdb.getAluno(matricula);
 
 		if (aluno == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else
 			aluno.setNome(nome);
 		aluno.setFone(fone);
@@ -212,7 +217,7 @@ public class AlunoLogic {
 	}
 
 	public boolean delAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+			String cep, String sexo, String curso_nome)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Aluno aluno = null;
 		Curso curso = null;
 		String entidadeNaoExist = "Aluno não existe no banco de dados";
@@ -224,7 +229,7 @@ public class AlunoLogic {
 			aluno = cdb.getAluno(matricula);
 
 		if (aluno == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else
 			aluno = new Aluno();
 		aluno.setMatricula(matricula);
@@ -251,7 +256,7 @@ public class AlunoLogic {
 		return aluno;
 	}
 
-	public List<Aluno> getTodosAlunos() throws SQLException {
+	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException {
 		return cdb.getTodosAlunos();
 	}		
 }

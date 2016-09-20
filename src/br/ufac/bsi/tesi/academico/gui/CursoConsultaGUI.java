@@ -10,7 +10,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.logic.Curso;
@@ -45,6 +53,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			tblCursos.setToolTipText("Lista de Cursos!");		
 			tblCursos.setFocusable(false);
 			tblCursos.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mouseClicked(MouseEvent e){
 					btnEditar.setEnabled(true);
 					btnExcluir.setEnabled(true);

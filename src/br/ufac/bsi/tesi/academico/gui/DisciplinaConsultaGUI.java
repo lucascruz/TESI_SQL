@@ -1,6 +1,7 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,7 +10,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.logic.Disciplina;
@@ -44,6 +53,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 		tblDisciplina.setToolTipText("Lista de Disciplinas!");		
 		tblDisciplina.setFocusable(false);
 		tblDisciplina.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e){
 				btnEditar.setEnabled(true);
 				btnExcluir.setEnabled(true);

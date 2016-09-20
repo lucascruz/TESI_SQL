@@ -1,14 +1,32 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.db.*;
-import br.ufac.bsi.tesi.academico.logic.*;
-import javax.swing.*; 					
-
-import br.ufac.bsi.tesi.academico.exception.*;
-
-import java.awt.*; 						
-import java.awt.event.*; 				
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.NumberErroException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
+import br.ufac.bsi.tesi.academico.logic.Centro;
+import br.ufac.bsi.tesi.academico.logic.CentroLogic;
+import br.ufac.bsi.tesi.academico.logic.Professor;
+import br.ufac.bsi.tesi.academico.logic.ProfessorLogic;
 
 public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	int matricula =0, cpf=0, rg=0;
@@ -86,6 +104,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 
 	} //Fim do mÃ©todo construtor
 
+	@Override
 	public void actionPerformed(ActionEvent e){
 
 		if (e.getSource() == btnConfirmar){
@@ -203,7 +222,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, e, 
 						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			}catch(LenghtInvalidFieldException eoo){
+			}catch(InvalidLenghtFieldException eoo){
 				JOptionPane.showMessageDialog(null, eoo, 
 						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -219,7 +238,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, parente, 
 						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			} catch (NomeInvalidoException nomee) {
+			} catch (InvalidNameException nomee) {
 				JOptionPane.showMessageDialog(null, nomee, 
 						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -236,7 +255,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, e, 
 						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			}catch(LenghtInvalidFieldException eoo){
+			}catch(InvalidLenghtFieldException eoo){
 				JOptionPane.showMessageDialog(null, eoo, 
 						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -244,7 +263,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, number, 
 						"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			}catch(EntityDontExistException jamais){
+			}catch(EntityNotExistException jamais){
 				JOptionPane.showMessageDialog(null, jamais, 
 						"PROFESSOR NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -252,7 +271,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, parente, 
 						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			} catch (NomeInvalidoException nomee) {
+			} catch (InvalidNameException nomee) {
 				JOptionPane.showMessageDialog(null, nomee, 
 						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -265,7 +284,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		case 2:
 			try{
 				confirmado = professorLogic.delProfessor(matricula, nome, rg, cpf, endereco, fone, centroSigla);
-			}catch(EntityDontExistException jamais){
+			}catch(EntityNotExistException jamais){
 				JOptionPane.showMessageDialog(null, jamais, 
 						"PROFESSOR NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -273,7 +292,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, parente, 
 						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			} catch (NomeInvalidoException nomee) {
+			} catch (InvalidNameException nomee) {
 				JOptionPane.showMessageDialog(null, nomee, 
 						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;

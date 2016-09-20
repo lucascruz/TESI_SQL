@@ -18,6 +18,7 @@ public class DisciplinaTableModel extends AbstractTableModel {
 		
 	}
 
+	@Override
 	public String getColumnName(int columnIndex) {
 
 		String nomeDaColuna = null;
@@ -36,6 +37,7 @@ public class DisciplinaTableModel extends AbstractTableModel {
 		
 	}
 
+	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		String className;
 		try {
@@ -51,20 +53,24 @@ public class DisciplinaTableModel extends AbstractTableModel {
 		return Object.class;
 	}
 
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
 
+	@Override
 	public int getColumnCount() {
 
 		return 3;
 
 	}
 
+	@Override
 	public int getRowCount() {
 		return disciplinas.size();
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		
 		Disciplina disciplina = disciplinas.get(rowIndex);

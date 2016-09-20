@@ -15,10 +15,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
-import br.ufac.bsi.tesi.academico.exception.*;
 import br.ufac.bsi.tesi.academico.db.Conexao;
-import br.ufac.bsi.tesi.academico.logic.*;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.NumberErroException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
+import br.ufac.bsi.tesi.academico.logic.Aluno;
+import br.ufac.bsi.tesi.academico.logic.AlunoLogic;
+import br.ufac.bsi.tesi.academico.logic.Curso;
+import br.ufac.bsi.tesi.academico.logic.CursoLogic;
 
 
 class AlunoCadastroGUI extends JFrame implements ActionListener {
@@ -95,12 +103,18 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		pack();
 		setLocationRelativeTo(null);
 
-	} //Fim do mÃ©todo construtor
+	} 
 
+	@Override
 	public void actionPerformed(ActionEvent e){
 
 		if (e.getSource() == btnConfirmar){
-			confirmar();
+			try {
+				confirmar();
+			} catch (InvalidNameException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}	
 
 		if (e.getSource() == btnCancelar){
@@ -188,7 +202,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	}
 
 
-	public void confirmar(){
+	public void confirmar() throws InvalidNameException{
 
 		Curso curso;
 		boolean confirmado= true;
@@ -211,7 +225,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(null, e, 
 							"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
 					confirmado = false;
-				}catch(LenghtInvalidFieldException eoo){
+				}catch(InvalidLenghtFieldException eoo){
 					JOptionPane.showMessageDialog(null, eoo, 
 							"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
 					confirmado = false;
@@ -227,7 +241,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(null, parente, 
 							"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 					confirmado = false;
-				} catch (NomeInvalidoException nomee) {
+				} catch (InvalidNameException nomee) {
 					JOptionPane.showMessageDialog(null, nomee, 
 							"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 					confirmado = false;
@@ -244,7 +258,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, e, 
 						"Campos Vazio", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			}catch(LenghtInvalidFieldException eoo){
+			}catch(InvalidLenghtFieldException eoo){
 				JOptionPane.showMessageDialog(null, eoo, 
 						"Tamanho maximo atingido", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -252,7 +266,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, number, 
 						"Erro De Caracter", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			}catch(EntityDontExistException jamais){
+			}catch(EntityNotExistException jamais){
 				JOptionPane.showMessageDialog(null, jamais, 
 						"ALUNO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -260,7 +274,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, parente, 
 						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			} catch (NomeInvalidoException nomee) {
+			} catch (InvalidNameException nomee) {
 				JOptionPane.showMessageDialog(null, nomee, 
 						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -273,7 +287,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		case 2:
 			try{
 				confirmado = alunoLogic.delAluno(matricula, nome, fone, cep, endereco, sexo, cursoNome);
-			}catch(EntityDontExistException jamais){
+			}catch(EntityNotExistException jamais){
 				JOptionPane.showMessageDialog(null, jamais, 
 						"ALUNO NÃO EXISTE", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
@@ -281,7 +295,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, parente, 
 						"ERRO CHAVE PRIMARIA", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;
-			} catch (NomeInvalidoException nomee) {
+			} catch (InvalidNameException nomee) {
 				JOptionPane.showMessageDialog(null, nomee, 
 						"ERRO NOME VAZIO", JOptionPane.PLAIN_MESSAGE);
 				confirmado = false;

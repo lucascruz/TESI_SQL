@@ -3,17 +3,20 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.ufac.bsi.tesi.academico.exception.*;
-import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.ProfessorDB;
-import br.ufac.bsi.tesi.academico.logic.CentroLogic;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 
 public class ProfessorLogic {
 	private ProfessorDB pdb = new ProfessorDB();
 	private CentroLogic centroLogic = new CentroLogic();
 	
 	public boolean addProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centro_sigla)throws InvalidFieldException, LenghtInvalidFieldException, ParentHasChildrenException, EntityAlreadyExistException, NomeInvalidoException, SQLException{
+			String endereco, String fone, String centro_sigla)throws InvalidFieldException, InvalidLenghtFieldException, ParentHasChildrenException, EntityAlreadyExistException, InvalidNameException, SQLException{
 		Professor professor = null;
 		String camposInvalidos = "", camposInvalidosMax="", entidadeJaExiste = "Professor de: ";
 		boolean falhaVazio = false, falhaMax = false;
@@ -76,7 +79,7 @@ public class ProfessorLogic {
 			throw new InvalidFieldException(camposInvalidos);
 		
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 		
 		if (matricula != 0)
 			professor = pdb.getProfessor(matricula);
@@ -106,7 +109,7 @@ public class ProfessorLogic {
 	}
 
 	public boolean updProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centrosigla)throws InvalidFieldException, LenghtInvalidFieldException, EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+			String endereco, String fone, String centrosigla)throws InvalidFieldException, InvalidLenghtFieldException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Professor professor = null;
 		String camposInvalidos = "", camposInvalidosMax="",entidadeNaoExist = "Professor não existe no banco de dados";
 		boolean falhaVazio = false, falhaMax = false;
@@ -169,13 +172,13 @@ public class ProfessorLogic {
 			throw new InvalidFieldException(camposInvalidos);
 		
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 		
 		if (matricula != 0)
 			professor = pdb.getProfessor(matricula);
 
 		if (professor == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else{
 			professor = new Professor();
 			professor.setMatricula(matricula);
@@ -196,7 +199,7 @@ public class ProfessorLogic {
 	}
 
 	public boolean delProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centro_sigla)throws EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+			String endereco, String fone, String centro_sigla)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		String entidadeNaoExist = "Professor não existe no banco de dados";
 		Professor professor = null;
 		Centro centro = null;
@@ -211,7 +214,7 @@ public class ProfessorLogic {
 			professor = pdb.getProfessor(matricula);
 
 		if (professor == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else{
 			professor = new Professor();
 			professor.setMatricula(matricula);

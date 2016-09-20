@@ -18,6 +18,7 @@ public class AlunoTableModel extends AbstractTableModel {
 		
 	}
 
+	@Override
 	public String getColumnName(int columnIndex) {
 
 		String nomeDaColuna = null;
@@ -44,6 +45,7 @@ public class AlunoTableModel extends AbstractTableModel {
 		
 	}
 
+	@Override
 	public Class<?> getColumnClass(int columnIndex) throws NullPointerException {
 		try{
 			getValueAt(0, columnIndex).getClass();
@@ -54,21 +56,25 @@ public class AlunoTableModel extends AbstractTableModel {
 		return getValueAt(0, columnIndex).getClass();
 	}
 
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
 
+	@Override
 	public int getColumnCount() {
 
 		return 7;
 
 	}
 
+	@Override
 	public int getRowCount() {
 		return alunos.size();
 	}
 
-	public Object getValueAt(int rowIndex, int columnIndex) {
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) throws NullPointerException {
 		
 		Aluno aluno = alunos.get(rowIndex);
 		Object valor = null;

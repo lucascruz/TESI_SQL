@@ -6,17 +6,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import br.ufac.bsi.tesi.academico.exception.*;
-
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.InvalidSizeCollumnsException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Disciplina;
 
 public class DisciplinaDB {
 	private Conexao conexao = Conexao.getInstacia();
 	
 
-	public boolean addDisciplina(Disciplina disciplina)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO disciplina (codigo, nome, ch) VALUES ('" + disciplina.getCodigo()
 		 + "', '" + disciplina.getNome()+ "', '"+ disciplina.getCh() +"');";
 	
@@ -26,17 +27,17 @@ public class DisciplinaDB {
 			switch (sqle.getErrorCode()){
 			case 1062 :
 				throw new EntityAlreadyExistException("Disciplina: " + disciplina.getCodigo());
-			case 1451 :
-				throw new ParentHasChildrenException("Disciplina: " + disciplina.getCodigo() + "possui professores vinculados!");
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Disciplina: "+ disciplina.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1474:
-				throw new NomeInvalidoException("Disciplina: " +disciplina.getCodigo());
+				throw new InvalidNameException("Disciplina: " +disciplina.getCodigo());
 			}
 			
 		}
 		return false;
 	}
 	
-	public boolean updDisciplina(Disciplina disciplina)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean updDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strEditar = "UPDATE disciplina " + "SET nome = '" + disciplina.getNome() +"' " + "SET ch = '" +
 				disciplina.getCh()+ "' " + "WHERE codigo = '" + disciplina.getCodigo() + "';";
 		
@@ -45,19 +46,18 @@ public class DisciplinaDB {
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
 			case 1244 :
-				throw new EntityDontExistException("Disciplina: " + disciplina.getCodigo());
-			case 1451 :// essa n tem chave estangeira mas como é uma disciplina acredito que futuramente pode ser feita
-				//uma chave assim para ela
-				throw new ParentHasChildrenException("Disciplina: " + disciplina.getCodigo() + "possui cursos vinculados!");
+				throw new EntityNotExistException("Disciplina: " + disciplina.getCodigo());
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Disciplina: "+ disciplina.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1474:
-				throw new NomeInvalidoException("Disciplina: " +disciplina.getCodigo());
+				throw new InvalidNameException("Disciplina: " +disciplina.getCodigo());
 			}
 		}
 		
 		return false;
 	}
 	
-	public boolean delDisciplina(Disciplina disciplina)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean delDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strExcluir = "DELETE FROM disciplina "
 				+ "WHERE codigo = '" + disciplina.getCodigo() + "';";
 		
@@ -66,11 +66,13 @@ public class DisciplinaDB {
 		}catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
 			case 1244 :
-				throw new EntityDontExistException("Disciplina: " + disciplina.getCodigo());
+				throw new EntityNotExistException("Disciplina: " + disciplina.getCodigo());
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Disciplina: "+ disciplina.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1451 :
 				throw new ParentHasChildrenException("Disciplina: " + disciplina.getCodigo() + "possui professores vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Disciplina: " +disciplina.getCodigo());
+				throw new InvalidNameException("Disciplina: " +disciplina.getCodigo());
 			}
 		}
 		
@@ -97,7 +99,7 @@ public class DisciplinaDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Disciplina: " + disciplina.getCodigo());
+					throw new EntityNotExistException("Disciplina: " + disciplina.getCodigo());
 				}
 			}
 		}
@@ -127,8 +129,10 @@ public class DisciplinaDB {
 				}
 			} catch (SQLException sqle) {
 				switch (sqle.getErrorCode()){
+				case 3013 :
+					throw new InvalidSizeCollumnsException("Disciplina: "+ disciplina.getCodigo() + "Possui algum do campos fora do limite esperado");
 				case 1244 :
-					throw new EntityDontExistException("Disciplina: " + disciplina.getCodigo());
+					throw new EntityNotExistException("Disciplina: " + disciplina.getCodigo());
 				}
 			}
 		}

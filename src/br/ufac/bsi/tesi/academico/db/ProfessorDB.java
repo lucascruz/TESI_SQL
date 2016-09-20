@@ -5,14 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import br.ufac.bsi.tesi.academico.exception.*;
-
-
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.InvalidSizeCollumnsException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Centro;
 import br.ufac.bsi.tesi.academico.logic.Professor;
-import br.ufac.bsi.tesi.academico.db.CentroDB;
 
 public class ProfessorDB {
 
@@ -23,7 +22,7 @@ public class ProfessorDB {
 	
 
 
-	public boolean addProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, centro_sigla) "
 				+ "VALUES (" +
 				+ professor.getMatricula() +", '" 
@@ -38,18 +37,20 @@ public class ProfessorDB {
 			return (conexao.atualize(strIncluir)>0);
 		}catch(SQLException sqle){
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Professor: "+ professor.getMatricula() + "Possui algum do campos fora do limite esperado");
 			case 1062 :
 				throw new EntityAlreadyExistException("Professor: " + professor.getMatricula());
 			case 1451 :
 				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "possui chaves estrangeiras vinculada!");
 			case 1474:
-				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+				throw new InvalidNameException("Professor: " +professor.getMatricula());
 			}
 			
 		}
 		return false;
 	}
-	public boolean updProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean updProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strEditar = "UPDATE professor "
 				+ "SET nome = '" + professor.getNome() +"', "
 				+ "    rg = '" + professor.getRg() + "', "
@@ -64,18 +65,17 @@ public class ProfessorDB {
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
 			case 1244 :
-				throw new EntityDontExistException("Professor: " + professor.getMatricula());
-			case 1451 :// essa n tem chave estangeira mas como é uma disciplina acredito que futuramente pode ser feita
-				//uma chave assim para ela
-				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "Possui chave estrangeira vinculada!");
+				throw new EntityNotExistException("Professor: " + professor.getMatricula());
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Professor: "+ professor.getMatricula() + "Possui algum do campos fora do limite esperado");
 			case 1474:
-				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+				throw new InvalidNameException("Professor: " +professor.getMatricula());
 			}
 		}
 		
 		return false;
 	}
-	public boolean delProfessor(Professor professor)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean delProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strExcluir = "DELETE FROM professor "
 				+ "WHERE matricula = " + professor.getMatricula() + ";";
 		
@@ -85,11 +85,12 @@ public class ProfessorDB {
 		}catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
 			case 1244 :
-				throw new EntityDontExistException("Professor: " + professor.getMatricula());
-			case 1451 :
-				throw new ParentHasChildrenException("Professor: " + professor.getMatricula() + "Possui chave estrangeira vinculada!");
+				throw new EntityNotExistException("Professor: " + professor.getMatricula());
 			case 1474:
-				throw new NomeInvalidoException("Professor: " +professor.getMatricula());
+				throw new InvalidNameException("Professor: " +professor.getMatricula());
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Professor: "+ professor.getMatricula() + "Possui algum do campos fora do limite esperado");
+			
 			}
 		}
 		
@@ -128,7 +129,7 @@ public class ProfessorDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+					throw new EntityNotExistException("Professor: " + professor.getMatricula());
 				}
 			}
 		}
@@ -167,7 +168,7 @@ public class ProfessorDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+					throw new EntityNotExistException("Professor: " + professor.getMatricula());
 				}
 			}
 		}
@@ -206,7 +207,7 @@ public class ProfessorDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Professor: " + professor.getMatricula());
+					throw new EntityNotExistException("Professor: " + professor.getMatricula());
 				}
 			}
 		}

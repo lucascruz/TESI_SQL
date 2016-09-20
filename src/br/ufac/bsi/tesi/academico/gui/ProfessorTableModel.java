@@ -1,10 +1,11 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.logic.*;
+import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.table.*;
-import java.util.*;
+import javax.swing.table.AbstractTableModel;
+
+import br.ufac.bsi.tesi.academico.logic.Professor;
 
 @SuppressWarnings("serial")
 public class ProfessorTableModel extends AbstractTableModel {
@@ -14,6 +15,7 @@ public class ProfessorTableModel extends AbstractTableModel {
 		this.professores = professores;
 	}
 
+	@Override
 	public String getColumnName(int columnIndex) {
 		String nomeDaColuna = null;
 		
@@ -39,6 +41,7 @@ public class ProfessorTableModel extends AbstractTableModel {
 		
 	}
 
+	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		try{
 			getValueAt(0, columnIndex).getClass();
@@ -49,18 +52,22 @@ public class ProfessorTableModel extends AbstractTableModel {
 		return getValueAt(0, columnIndex).getClass();
 	}
 
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
 
+	@Override
 	public int getColumnCount() {
 		return 7;
 	}
 
+	@Override
 	public int getRowCount() {
 		return professores.size();
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		
 		Professor professor = professores.get(rowIndex);

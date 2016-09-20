@@ -4,10 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import  br.ufac.bsi.tesi.academico.exception.*;
-
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.InvalidSizeCollumnsException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Curso;
 
 public class CursoDB {
@@ -15,7 +16,7 @@ public class CursoDB {
 	private Conexao conexao = Conexao.getInstacia();
 	private ResultSet rs;
 
-	public boolean addCurso(Curso curso) throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		int codigo = Integer.parseInt(curso.getCodigo());
 		String strIncluir = "INSERT INTO curso (codigo, nome) VALUES ('" + codigo 
 		+ "', '" + curso.getNome() +"');";	
@@ -24,19 +25,21 @@ public class CursoDB {
 			return conexao.atualize(strIncluir)>0;
 		}catch(SQLException sqle){
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Curso: "+ curso.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1062 :
 				throw new EntityAlreadyExistException("Curso: " + curso.getCodigo());
 			case 1451 :
 				throw new ParentHasChildrenException("Curso: " + curso.getCodigo() + "possui alunos vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Curso: " +curso.getNome());
+				throw new InvalidNameException("Curso: " +curso.getNome());
 			}
 			
 		}
 		return false;
 	}
 	
-	public boolean updCurso(Curso curso) throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean updCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strEditar = "UPDATE curso " + 
 				"SET nome = '" + curso.getNome() + "' " + 
 				"WHERE codigo = '" + curso.getCodigo() + "';";
@@ -45,19 +48,21 @@ public class CursoDB {
 			return (conexao.atualize(strEditar)>0);
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Curso: "+ curso.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Curso: " + curso.getCodigo());
+				throw new EntityNotExistException("Curso: " + curso.getCodigo());
 			case 1451 :
 				throw new ParentHasChildrenException("Curso: " + curso.getCodigo() + "possui alunos vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Curso: " +curso.getCodigo());
+				throw new InvalidNameException("Curso: " +curso.getCodigo());
 			}
 		}
 		
 		return false;
 	}
 	
-	public boolean delCurso(Curso curso)throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean delCurso(Curso curso)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strExcluir = "DELETE FROM curso "
 				+ "WHERE codigo = '" + curso.getCodigo() + "';";
 		
@@ -65,12 +70,14 @@ public class CursoDB {
 			return (conexao.atualize(strExcluir)>0);
 		}catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Curso: "+ curso.getCodigo() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Curso: " + curso.getCodigo());
+				throw new EntityNotExistException("Curso: " + curso.getCodigo());
 			case 1451 :
 				throw new ParentHasChildrenException("Curso: " + curso.getCodigo() + "possui alunos vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Curso: " +curso.getCodigo());
+				throw new InvalidNameException("Curso: " +curso.getCodigo());
 			}
 		}
 		
@@ -96,7 +103,7 @@ public class CursoDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Curso: " + curso.getCodigo());
+					throw new EntityNotExistException("Curso: " + curso.getCodigo());
 				}
 			}
 		}
@@ -122,7 +129,7 @@ public class CursoDB {
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Curso: " + curso.getCodigo());
+					throw new EntityNotExistException("Curso: " + curso.getCodigo());
 				}
 			}
 		}

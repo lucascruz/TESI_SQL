@@ -1,14 +1,15 @@
 package br.ufac.bsi.tesi.academico.db;
 
-import java.util.*;
-import javax.swing.JOptionPane;
-
-import br.ufac.bsi.tesi.academico.exception.*;
-
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.InvalidSizeCollumnsException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Centro;
 public class CentroDB {
 
@@ -16,7 +17,7 @@ public class CentroDB {
 	private ResultSet rs; 
 
 
-	public boolean addCentro(Centro centro)throws SQLException, NomeInvalidoException, ParentHasChildrenException{
+	public boolean addCentro(Centro centro)throws SQLException, InvalidNameException, ParentHasChildrenException{
 		String strIncluir = "INSERT INTO centro (sigla, nome) VALUES (" +
 				"'" + centro.getSigla() +"', '" + centro.getNome() +"');";		
 
@@ -24,19 +25,21 @@ public class CentroDB {
 			return conexao.atualize(strIncluir)>0;
 		}catch(SQLException sqle){
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Centro: "+ centro.getSigla() + "Possui algum do campos fora do limite esperado");
 			case 1062 :
 				throw new EntityAlreadyExistException("Centro: " + centro.getSigla());
 			case 1451 :
 				throw new ParentHasChildrenException("Centro: " + centro.getSigla() + "possui professores vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Centro: " +centro.getSigla());
+				throw new InvalidNameException("Centro: " +centro.getSigla());
 			}
 
 		}
 		return false;
 	}
 
-	public boolean updCentro(Centro centro) throws SQLException,NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean updCentro(Centro centro) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strEditar = "UPDATE centro "
 				+ "SET nome = '" + centro.getNome() +"' "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
@@ -45,19 +48,21 @@ public class CentroDB {
 			return (conexao.atualize(strEditar)>0);
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Centro: "+ centro.getSigla() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Centro: " + centro.getSigla());
+				throw new EntityNotExistException("Centro: " + centro.getSigla());
 			case 1451 :
 				throw new ParentHasChildrenException("Centro: " + centro.getSigla() + "possui professores vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Centro: " +centro.getSigla());
+				throw new InvalidNameException("Centro: " +centro.getSigla());
 			}
 		}
 
 		return false;
 	}
 
-	public boolean delCentro(Centro centro) throws SQLException, NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean delCentro(Centro centro) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strExcluir = "DELETE FROM centro "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
 
@@ -65,12 +70,14 @@ public class CentroDB {
 			return (conexao.atualize(strExcluir)>0);
 		}catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Centro: "+ centro.getSigla() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Centro: " + centro.getSigla());
+				throw new EntityNotExistException("Centro: " + centro.getSigla());
 			case 1451 :
 				throw new ParentHasChildrenException("Centro: " + centro.getSigla() + "possui professores vinculados!");
 			case 1474:
-				throw new NomeInvalidoException("Centro: " +centro.getSigla());
+				throw new InvalidNameException("Centro: " +centro.getSigla());
 			}
 		}
 
@@ -95,8 +102,10 @@ public class CentroDB {
 				}
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
+				case 3013 :
+					throw new InvalidSizeCollumnsException("Centro: "+ centro.getSigla() + "Possui algum do campos fora do limite esperado");
 				case 1244 :
-					throw new EntityDontExistException("Centro: " + centro.getSigla());
+					throw new EntityNotExistException("Centro: " + centro.getSigla());
 				}
 			}
 		}
@@ -123,8 +132,10 @@ public class CentroDB {
 				}
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
+				case 3013 :
+					throw new InvalidSizeCollumnsException("Centro: "+ centro.getSigla() + "Possui algum do campos fora do limite esperado");
 				case 1244 :
-					throw new EntityDontExistException("Centro: " + centro.getSigla());
+					throw new EntityNotExistException("Centro: " + centro.getSigla());
 				}
 			}
 		}

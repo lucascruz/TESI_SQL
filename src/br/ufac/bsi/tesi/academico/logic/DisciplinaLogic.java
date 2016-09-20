@@ -3,15 +3,20 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.ufac.bsi.tesi.academico.exception.*;
-import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.DisciplinaDB;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.NumberErroException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 
 public class DisciplinaLogic {
 	private DisciplinaDB cdb = new DisciplinaDB();
 
 
-	public boolean addDisciplina(String nome, String codigo, String ch)throws InvalidFieldException , LenghtInvalidFieldException, NumberErroException, EntityAlreadyExistException, ParentHasChildrenException, SQLException, NomeInvalidoException{
+	public boolean addDisciplina(String nome, String codigo, String ch)throws InvalidFieldException , InvalidLenghtFieldException, NumberErroException, EntityAlreadyExistException, ParentHasChildrenException, SQLException, InvalidNameException{
 		Disciplina disciplina = null;
 		String camposInvalidos = "", camposInvalidosMax = "", camposNumericosInvalidos= "", entidadeJaExiste = "Disciplina de: ";
 		boolean falha = false, falhaMax = false, falhaNumero = false;
@@ -56,7 +61,7 @@ public class DisciplinaLogic {
 			throw new NumberErroException(camposNumericosInvalidos);
 
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!codigo.isEmpty())
 			disciplina = cdb.getDisciplina(codigo);
@@ -72,7 +77,7 @@ public class DisciplinaLogic {
 		}
 	}
 	@SuppressWarnings("unused")
-	public boolean updDisciplina(String nome, String codigo, String ch)throws InvalidFieldException,EntityDontExistException,  NumberErroException, LenghtInvalidFieldException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+	public boolean updDisciplina(String nome, String codigo, String ch)throws InvalidFieldException,EntityNotExistException,  NumberErroException, InvalidLenghtFieldException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Disciplina disciplina = null;
 		String camposInvalidos = "", camposInvalidosMax = "", camposNumericosInvalidos= "",entidadeNaoExist = "Disciplina não existe no banco de dados";
 		boolean falha = false, falhaMax = false, falhaNumero = false;
@@ -117,13 +122,13 @@ public class DisciplinaLogic {
 			throw new NumberErroException(camposNumericosInvalidos);
 
 		if(falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosMax);
+			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!codigo.isEmpty())
 			disciplina = cdb.getDisciplina(codigo);
 
 		if (disciplina == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else{
 			disciplina.setNome(nome);
 			disciplina.setCh(ch);
@@ -132,7 +137,7 @@ public class DisciplinaLogic {
 
 	}
 
-	public boolean delDisciplina(String nome, String codigo, String ch)throws EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+	public boolean delDisciplina(String nome, String codigo, String ch)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Disciplina disciplina = null;
 		String entidadeNaoExist = "Disciplina não existe no banco de dados";
 		if (nome.isEmpty() || codigo.isEmpty()|| ch.isEmpty())
@@ -142,7 +147,7 @@ public class DisciplinaLogic {
 			disciplina = cdb.getDisciplina(codigo);
 
 		if (disciplina == null)
-			throw new EntityDontExistException(entidadeNaoExist);
+			throw new EntityNotExistException(entidadeNaoExist);
 		else
 			return cdb.delDisciplina(disciplina);
 	}

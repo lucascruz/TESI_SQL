@@ -5,11 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import br.ufac.bsi.tesi.academico.exception.*;
-
-import br.ufac.bsi.tesi.academico.logic.*;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.InvalidSizeCollumnsException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
+import br.ufac.bsi.tesi.academico.logic.Aluno;
+import br.ufac.bsi.tesi.academico.logic.Curso;
 
 public class AlunoDB{
 	private Conexao conexao = Conexao.getInstacia();
@@ -17,7 +19,7 @@ public class AlunoDB{
 	private ResultSet rs;
 
 
-	public boolean addAluno(Aluno aluno) throws SQLException, NomeInvalidoException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addAluno(Aluno aluno) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO aluno (matricula, nome, fone, endereco, cep, sexo, curso_codigo) VALUES ('" +
 				aluno.getMatricula() + "', '" + 
 				aluno.getNome() + "', '" + 
@@ -31,19 +33,21 @@ public class AlunoDB{
 			return conexao.atualize(strIncluir)>0;
 		}catch(SQLException sqle){
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Aluno: "+aluno.getMatricula() + "Possui algum do campos fora do limite esperado");
 			case 1062 :
 				throw new EntityAlreadyExistException("Aluno: " + aluno.getMatricula());
 			case 1451 :
 				throw new ParentHasChildrenException("Aluno: " + aluno.getMatricula() + "Possui chave estrangeira vinculada!");
 			case 1474:
-				throw new NomeInvalidoException("Aluno: " +aluno.getMatricula());
+				throw new InvalidNameException("Aluno: " +aluno.getMatricula());
 			}
 
 		}
 		return false;
 	}
 
-	public boolean updAluno(Aluno aluno)throws SQLException, NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean updAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strEditar = "UPDATE aluno " +
 				"SET nome = '" + aluno.getNome() + "', " + 
 				"    fone = '" + aluno.getFone() + "', " + 
@@ -57,19 +61,21 @@ public class AlunoDB{
 			return (conexao.atualize(strEditar)>0);
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Aluno: "+aluno.getMatricula() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Aluno: " + aluno.getMatricula());
+				throw new EntityNotExistException("Aluno: " + aluno.getMatricula());
 			case 1451 :
 				throw new ParentHasChildrenException("Aluno: " + aluno.getMatricula() + "Possui chave estrangeira vinculada!");
 			case 1474:
-				throw new NomeInvalidoException("Aluno: " +aluno.getMatricula());
+				throw new InvalidNameException("Aluno: " +aluno.getMatricula());
 			}
 		}
 
 		return false;
 	}
 
-	public boolean delAluno(Aluno aluno)throws SQLException, NomeInvalidoException, ParentHasChildrenException, EntityDontExistException{
+	public boolean delAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
 		String strExcluir = "DELETE FROM aluno "
 				+ "WHERE matricula = '" + aluno.getMatricula() + "';";
 
@@ -77,12 +83,14 @@ public class AlunoDB{
 			return (conexao.atualize(strExcluir)>0);
 		} catch (SQLException sqle) {
 			switch (sqle.getErrorCode()){
+			case 3013 :
+				throw new InvalidSizeCollumnsException("Aluno: "+aluno.getMatricula() + "Possui algum do campos fora do limite esperado");
 			case 1244 :
-				throw new EntityDontExistException("Aluno: " + aluno.getMatricula());
+				throw new EntityNotExistException("Aluno: " + aluno.getMatricula());
 			case 1451 :
 				throw new ParentHasChildrenException("Aluno: " + aluno.getMatricula() + "Possui chave estrangeira vinculada!");
 			case 1474:
-				throw new NomeInvalidoException("Aluno: " +aluno.getMatricula());
+				throw new InvalidNameException("Aluno: " +aluno.getMatricula());
 			}
 		}
 		return false;
@@ -119,13 +127,13 @@ public class AlunoDB{
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
 				case 1244 :
-					throw new EntityDontExistException("Aluno: " + aluno.getMatricula());
+					throw new EntityNotExistException("Aluno: " + aluno.getMatricula());
 				}
 			}
 		}
 		return aluno;
 	}
-	public List<Aluno> getTodosAlunos() throws SQLException {
+	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException {
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		Curso curso = null;
 		Aluno aluno = null;
@@ -155,8 +163,12 @@ public class AlunoDB{
 				}
 			}catch(SQLException sqle){
 				switch (sqle.getErrorCode()){
+				case 3013 :
+					throw new InvalidSizeCollumnsException("Aluno: "+aluno.getMatricula() + "Possui algum do campos fora do limite esperado");
 				case 1244 :
-					throw new EntityDontExistException("Aluno: " + aluno.getMatricula());
+					throw new EntityNotExistException("Aluno: " + aluno.getMatricula());
+				case 1474:
+					throw new InvalidNameException("Aluno: " +aluno.getMatricula());
 				}
 			}
 		}

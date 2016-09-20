@@ -1,9 +1,17 @@
 package br.ufac.bsi.tesi.academico.gui;
 
-import br.ufac.bsi.tesi.academico.db.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
+import javax.swing.WindowConstants;
+
+import br.ufac.bsi.tesi.academico.db.Conexao;
 
 public class AcademicoGUI extends JFrame implements ActionListener{
 
@@ -20,7 +28,7 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 
 	public AcademicoGUI() {
 		setTitle("Controle Academico");
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
 		setLocationRelativeTo(null);
 

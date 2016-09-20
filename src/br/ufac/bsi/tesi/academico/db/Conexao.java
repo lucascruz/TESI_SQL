@@ -1,6 +1,10 @@
 package br.ufac.bsi.tesi.academico.db;
 //importando as classes da api JDBC
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 //Classe Conexao
 public class Conexao {
@@ -85,6 +89,7 @@ public class Conexao {
 		return instacia;
 	}
 	
+	@Override
 	public void finalize() throws Throwable {
 		if (instacia != null) {
 			desconecte();

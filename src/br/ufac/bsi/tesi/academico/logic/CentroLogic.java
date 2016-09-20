@@ -3,17 +3,20 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
-import br.ufac.bsi.tesi.academico.exception.*;
-import br.ufac.bsi.tesi.academico.db.*;
-import br.ufac.bsi.tesi.academico.logic.Centro;
-import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.db.CentroDB;
+import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
+import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidLenghtFieldException;
+import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
+import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 
 public class CentroLogic {
 
 	private CentroDB cdb = new CentroDB();
 	
-	public boolean addCentro(String sigla, String nome) throws InvalidFieldException, LenghtInvalidFieldException, 
-	EntityAlreadyExistException, SQLException, ParentHasChildrenException, NomeInvalidoException{
+	public boolean addCentro(String sigla, String nome) throws InvalidFieldException, InvalidLenghtFieldException, 
+	EntityAlreadyExistException, SQLException, ParentHasChildrenException, InvalidNameException{
 		
 		Centro centro = null;
 		String camposInvalidos = "", camposInvalidosTamanho = "", entidadeJaExiste = "Centro de: ";
@@ -42,7 +45,7 @@ public class CentroLogic {
 			throw new InvalidFieldException(camposInvalidos);
 		
 		if (falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosTamanho);
+			throw new InvalidLenghtFieldException(camposInvalidosTamanho);
 		
 		if (!sigla.isEmpty())
 			centro = cdb.getCentro(sigla);
@@ -60,7 +63,7 @@ public class CentroLogic {
 
 	}
 
-	public boolean updCentro(String sigla, String nome)throws InvalidFieldException, LenghtInvalidFieldException, EntityDontExistException, ParentHasChildrenException, NomeInvalidoException, SQLException{
+	public boolean updCentro(String sigla, String nome)throws InvalidFieldException, InvalidLenghtFieldException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Centro centro = null;
 		String camposInvalidos = "", camposInvalidosTamanho = "", entidadeNaoExist = "Centro não existe no banco de dados";
 		boolean falha = false, falhaMax = false;
@@ -88,7 +91,7 @@ public class CentroLogic {
 			throw new InvalidFieldException(camposInvalidos);
 		
 		if (falhaMax)
-			throw new LenghtInvalidFieldException(camposInvalidosTamanho);
+			throw new InvalidLenghtFieldException(camposInvalidosTamanho);
 
 		if (!sigla.isEmpty())
 			centro = cdb.getCentro(sigla);
@@ -103,7 +106,7 @@ public class CentroLogic {
 
 	}
 
-	public boolean delCentro(String sigla, String nome) throws EntityDontExistException, ParentHasChildrenException, SQLException, NomeInvalidoException{
+	public boolean delCentro(String sigla, String nome) throws EntityNotExistException, ParentHasChildrenException, SQLException, InvalidNameException{
 		String entidadeNaoExist = "Centro não existe no banco de dados";
 		Centro centro = null;
 		

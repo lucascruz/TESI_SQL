@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+
 import br.ufac.bsi.tesi.academico.logic.Centro;
 	
 	public class CentroTableModel extends AbstractTableModel {
@@ -15,6 +16,7 @@ import br.ufac.bsi.tesi.academico.logic.Centro;
 			
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) throws NullPointerException{
 
 			String nomeDaColuna = null;
@@ -35,24 +37,29 @@ import br.ufac.bsi.tesi.academico.logic.Centro;
 			return nomeDaColuna;			
 		}
 
+		@Override
 		public Class<?> getColumnClass(int columnIndex) {
 			return getValueAt(0, columnIndex).getClass();
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
+		@Override
 		public int getColumnCount() {
 
 			return 2;
 
 		}
 
+		@Override
 		public int getRowCount() {
 			return centros.size();
 		}
 
+		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			
 			Centro centro = centros.get(rowIndex);

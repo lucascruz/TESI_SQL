@@ -1,25 +1,24 @@
 package br.ufac.bsi.tesi.academico.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import br.ufac.bsi.tesi.academico.db.Conexao;
-import br.ufac.bsi.tesi.academico.gui.AcademicoGUI;
-
 import java.awt.GridLayout;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.gui.AcademicoGUI;
 
 @SuppressWarnings("serial")
 public class Tela_Login extends JFrame {
@@ -34,6 +33,7 @@ public class Tela_Login extends JFrame {
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Tela_Login frame = new Tela_Login();
@@ -64,6 +64,7 @@ public class Tela_Login extends JFrame {
 
 		textField = new JTextField();
 		textField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				usuario = (String) e.getSource();
 			}
@@ -76,11 +77,13 @@ public class Tela_Login extends JFrame {
 
 		passwordField = new JPasswordField();
 		passwordField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				senha = (String) e.getSource();
 			}
 		});
 		passwordField.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyPressed(final KeyEvent e ){
 				int key = e.getKeyCode();
 				if (key == KeyEvent.VK_ENTER){
@@ -105,6 +108,7 @@ public class Tela_Login extends JFrame {
 
 		JButton btnNewButton = new JButton("LOGAR");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				usuario = textField.getText();
 				char [] pass = passwordField.getPassword();
@@ -133,6 +137,7 @@ public class Tela_Login extends JFrame {
 
 		JButton btnNewButton_1 = new JButton("SAIR");
 		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					cnx.finalize();

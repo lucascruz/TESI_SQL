@@ -16,6 +16,7 @@ public class CursoTableModel extends AbstractTableModel{
 		this.cursos = cursos;	
 	}
 
+	@Override
 	public String getColumnName(int columnIndex) throws NullPointerException{
 
 		String nomeDaColuna = null;
@@ -36,24 +37,29 @@ public class CursoTableModel extends AbstractTableModel{
 		return nomeDaColuna;			
 	}
 
+	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		return getValueAt(0, columnIndex).getClass();
 	}
 
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
 
+	@Override
 	public int getColumnCount() {
 
 		return 2;
 
 	}
 
+	@Override
 	public int getRowCount() {
 		return cursos.size();
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
 		Curso curso = cursos.get(rowIndex);
