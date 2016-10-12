@@ -33,10 +33,10 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 	private JTextField fldValor;
 	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
-	private Conexao cnx= Conexao.getInstacia();
 	private AcademicoGUI pai;	
 	private AlunoCadastroGUI pcgui;
 	private AlunoLogic alunoLogic;
+	private Conexao cnx;
 
 	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx){
 		super("Consulta de Aluno");

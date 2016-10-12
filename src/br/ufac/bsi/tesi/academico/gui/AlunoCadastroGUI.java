@@ -40,7 +40,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private AlunoConsultaGUI pai;
-	private Conexao cnx = Conexao.getInstacia();
+	private Conexao cnx;
 
 	private AlunoLogic alunoLogic = new AlunoLogic();
 	private CursoLogic cursoLogic = new CursoLogic();	

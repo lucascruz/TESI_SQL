@@ -13,8 +13,12 @@ import br.ufac.bsi.tesi.academico.logic.Curso;
 
 public class CursoDB {
 	
-	private Conexao conexao = Conexao.getInstacia();
+	private Conexao conexao;
 	private ResultSet rs;
+	
+	public void setConexao(Conexao conexao){
+		this.conexao = conexao;
+	}
 
 	public boolean addCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		int codigo = Integer.parseInt(curso.getCodigo());
@@ -110,8 +114,7 @@ public class CursoDB {
 		return curso;
 	}
 	public List<Curso> getTodosCursos() throws SQLException {
-		List<Curso> cursos = new ArrayList<Curso>(); // fiquei com preguiça de sair mudando as variaveis aq oh, 
-		//deixei centro msm kkkkk
+		List<Curso> cursos = new ArrayList<Curso>();
 		Curso curso= null;
 
 		String strConsultar = "SELECT codigo, nome"

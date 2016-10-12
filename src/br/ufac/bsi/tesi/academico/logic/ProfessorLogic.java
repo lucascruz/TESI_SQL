@@ -3,6 +3,7 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.ProfessorDB;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
@@ -14,6 +15,11 @@ import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 public class ProfessorLogic {
 	private ProfessorDB pdb = new ProfessorDB();
 	private CentroLogic centroLogic = new CentroLogic();
+	
+	public void setConexao(Conexao conexao){
+		pdb.setConexao(conexao);
+		centroLogic.setConexao(conexao);
+	}
 	
 	public boolean addProfessor(int matricula, String nome, int rg, int cpf, 
 			String endereco, String fone, String centro_sigla)throws InvalidFieldException, InvalidLenghtFieldException, ParentHasChildrenException, EntityAlreadyExistException, InvalidNameException, SQLException{
@@ -97,11 +103,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			centro = centroLogic.getCentro(centro_sigla);
+			//centro = centroLogic.getCentro(centro_sigla);
 			
-			if (centro != null){
-				professor.setCentro(centro);
-			}			
+			//if (centro != null){
+			//	professor.setCentro(centro);
+			//}			
 			
 			return pdb.addProfessor(professor);
 		}
@@ -188,11 +194,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			centro = centroLogic.getCentro(centrosigla);
+			//centro = centroLogic.getCentro(centrosigla);
 			
-			if (centro != null){
-				professor.setCentro(centro);
-			}			
+			//if (centro != null){
+			//	professor.setCentro(centro);
+			//}			
 			
 			return pdb.updProfessor(professor);
 		}
@@ -224,11 +230,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			centro = centroLogic.getCentro(centro_sigla);
+			//centro = centroLogic.getCentro(centro_sigla);
 			
-			if (centro != null){
-				professor.setCentro(centro);
-			}			
+			//if (centro != null){
+			//	professor.setCentro(centro);
+			//}			
 			
 			return pdb.delProfessor(professor);
 		}
@@ -253,5 +259,6 @@ public class ProfessorLogic {
 			professor = pdb.getProfessoresPorNome(nome);
 
 		return professor;
-	}	
+	}
+
 }

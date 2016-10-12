@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.CentroDB;
+import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -14,6 +15,10 @@ import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 public class CentroLogic {
 
 	private CentroDB cdb = new CentroDB();
+	
+	public void setConexao(Conexao conexao){
+		cdb.setConexao(conexao);
+	}
 	
 	public boolean addCentro(String sigla, String nome) throws InvalidFieldException, InvalidLenghtFieldException, 
 	EntityAlreadyExistException, SQLException, ParentHasChildrenException, InvalidNameException{
@@ -134,4 +139,5 @@ public class CentroLogic {
 	public List<Centro> getTodosCentros() throws SQLException{
 		return cdb.getTodosCentros();
 	}
+
 }

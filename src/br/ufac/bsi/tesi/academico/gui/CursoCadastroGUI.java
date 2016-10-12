@@ -36,7 +36,7 @@ public class CursoCadastroGUI extends JFrame implements ActionListener{
 
 		private CursoConsultaGUI pai;
 
-		private Conexao cnx = Conexao.getInstacia();
+		private Conexao cnx;
 
 		private CursoLogic cursoLogic = new CursoLogic();	
 

@@ -33,7 +33,7 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 	private JTextField fldValor;
 	private JButton btnBuscar, btnSair, btnIncluir, btnEditar, btnExcluir, btnListar;
 
-	private Conexao cnx = Conexao.getInstacia();
+	private Conexao cnx;
 	private AcademicoGUI pai;	
 	private ProfessorCadastroGUI pcgui;
 	private ProfessorLogic professorLogic;

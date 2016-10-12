@@ -2,6 +2,7 @@ package br.ufac.bsi.tesi.academico.logic;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.CursoDB;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
@@ -14,6 +15,11 @@ import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 public class CursoLogic {
 
 	private CursoDB cdb = new CursoDB();
+	
+	public void setConexao(Conexao conexao){
+		cdb.setConexao(conexao);
+	}
+	
 	
 	public boolean addCurso(String codigo, String nome)throws InvalidFieldException, NumberErroException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Curso curso = null;

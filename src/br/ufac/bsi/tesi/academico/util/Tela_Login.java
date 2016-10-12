@@ -27,7 +27,7 @@ public class Tela_Login extends JFrame {
 	private JTextField textField;
 	private JPasswordField passwordField;
 	private String usuario, senha;
-	private static Conexao cnx = Conexao.getInstacia();
+	private static Conexao cnx;
 
 
 	public static void main(String[] args) {
@@ -91,16 +91,11 @@ public class Tela_Login extends JFrame {
 					char [] pass = passwordField.getPassword();
 					senha = new String (pass);
 					System.out.println(usuario+senha);
-					try {
-						if (cnx.conecte(usuario, senha)){
-							AcademicoGUI frame1 = new AcademicoGUI();
-							frame1.setVisible(true);
-							dispose();
-							System.out.println(cnx);}
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					if (cnx.conecte(usuario, senha)){
+						AcademicoGUI frame1 = new AcademicoGUI();
+						frame1.setVisible(true);
+						dispose();
+						System.out.println(cnx);}
 				}
 			}
 		});
@@ -114,20 +109,14 @@ public class Tela_Login extends JFrame {
 				char [] pass = passwordField.getPassword();
 				senha = new String (pass);
 				System.out.println(usuario+senha);
-				try {
-					if (cnx.conecte(usuario, senha)){
-						
-						AcademicoGUI frame1 = new AcademicoGUI();
-						frame1.setVisible(true);
-						dispose();
-						System.out.println(Conexao.getInstacia());
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (cnx.conecte(usuario, senha)){
+					AcademicoGUI frame1 = new AcademicoGUI();
+					frame1.setVisible(true);
+					dispose();
+					System.out.println(cnx);
 				}
 			//	cnx.desconecte();
-				System.out.println(Conexao.getInstacia());
+				System.out.println(cnx);
 			}
 		});
 

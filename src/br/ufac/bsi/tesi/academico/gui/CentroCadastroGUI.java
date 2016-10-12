@@ -34,7 +34,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private CentroConsultaGUI pai;
-	private Conexao cnx = Conexao.getInstacia();
+	private Conexao cnx;
 
 	private CentroLogic centroLogic = new CentroLogic();	
 

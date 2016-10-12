@@ -15,12 +15,14 @@ import br.ufac.bsi.tesi.academico.logic.Professor;
 
 public class ProfessorDB {
 
-	private Conexao conexao = Conexao.getInstacia();
-
+	private Conexao conexao;
 	private CentroDB cdb = new CentroDB();
 	private ResultSet rs; 
 	
-
+	public void setConexao(Conexao conexao){
+		this.conexao = conexao;
+		cdb.setConexao(conexao);
+	}
 
 	public boolean addProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, centro_sigla) "
@@ -213,4 +215,5 @@ public class ProfessorDB {
 		}
 		return professores;
 	}
+
 }

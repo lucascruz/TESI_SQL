@@ -14,8 +14,12 @@ import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Disciplina;
 
 public class DisciplinaDB {
-	private Conexao conexao = Conexao.getInstacia();
-	
+	private Conexao conexao;
+	private ResultSet rs;
+
+	public void setConexao(Conexao conexao){
+		this.conexao = conexao;
+	}
 
 	public boolean addDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO disciplina (codigo, nome, ch) VALUES ('" + disciplina.getCodigo()
@@ -86,7 +90,7 @@ public class DisciplinaDB {
 		String strConsultar = "SELECT codigo, nome, ch FROM disciplina "
 				+ "WHERE codigo = '" + codigo + "';"; 
 
-		ResultSet rs = conexao.consulte(strConsultar);
+		rs = conexao.consulte(strConsultar);
 		
 		if(rs != null){
 			try{ 

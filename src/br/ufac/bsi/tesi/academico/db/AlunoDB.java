@@ -14,10 +14,14 @@ import br.ufac.bsi.tesi.academico.logic.Aluno;
 import br.ufac.bsi.tesi.academico.logic.Curso;
 
 public class AlunoDB{
-	private Conexao conexao = Conexao.getInstacia();
+	private Conexao conexao;
 	private CursoDB cdb = new CursoDB();
 	private ResultSet rs;
 
+	public void setConexao(Conexao conexao){
+		this.conexao = conexao;
+		cdb.setConexao(conexao);
+	}
 
 	public boolean addAluno(Aluno aluno) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO aluno (matricula, nome, fone, endereco, cep, sexo, curso_codigo) VALUES ('" +

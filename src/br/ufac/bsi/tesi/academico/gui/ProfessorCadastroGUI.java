@@ -39,7 +39,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	private int operacao;
 
 	private ProfessorConsultaGUI pai;
-	private Conexao cnx = Conexao.getInstacia();
+	private Conexao cnx;
 
 	private ProfessorLogic professorLogic = new ProfessorLogic();
 	private CentroLogic centroLogic = new CentroLogic();	

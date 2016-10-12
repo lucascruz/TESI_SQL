@@ -13,9 +13,12 @@ import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 import br.ufac.bsi.tesi.academico.logic.Centro;
 public class CentroDB {
 
-	private Conexao conexao = Conexao.getInstacia();
+	private Conexao conexao;
 	private ResultSet rs; 
 
+	public void setConexao(Conexao conexao){
+		this.conexao = conexao;
+	}
 
 	public boolean addCentro(Centro centro)throws SQLException, InvalidNameException, ParentHasChildrenException{
 		String strIncluir = "INSERT INTO centro (sigla, nome) VALUES (" +
@@ -141,6 +144,7 @@ public class CentroDB {
 		}
 		return centros;
 	}
+
 }
 
 

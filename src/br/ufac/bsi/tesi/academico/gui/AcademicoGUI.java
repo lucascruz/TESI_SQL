@@ -15,16 +15,17 @@ import br.ufac.bsi.tesi.academico.db.Conexao;
 
 public class AcademicoGUI extends JFrame implements ActionListener{
 
-	ProfessorConsultaGUI professorConsultaGUI;
-	CentroConsultaGUI centroConsultaGUI;
-	CursoConsultaGUI cursoConsultaGUI;
-	DisciplinaConsultaGUI disciplinaConsultaGUI;
-	AlunoConsultaGUI alunoConsultaGui;
+	private ProfessorConsultaGUI professorConsultaGUI;
+	private CentroConsultaGUI centroConsultaGUI;
+	private CursoConsultaGUI cursoConsultaGUI;
+	private DisciplinaConsultaGUI disciplinaConsultaGUI;
+	private AlunoConsultaGUI alunoConsultaGui;
 	private JMenu mnCadastro, mnSobre;
 	private JMenuItem mntmProfessor, mntmCentro, mntmCurso, mntmDisciplina, mntmAluno, mntmHelp;
 	private JSeparator separator;
 	private JMenuItem mntmSair;
-	protected Conexao cnx = Conexao.getInstacia();
+	private Conexao cnx;
+
 
 	public AcademicoGUI() {
 		setTitle("Controle Academico");
