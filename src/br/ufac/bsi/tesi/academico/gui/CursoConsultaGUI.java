@@ -47,6 +47,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 
 			cursoGUI = new CursoCadastroGUI(this, cnx);		
 			cursoLogic = new CursoLogic();
+			cursoLogic.setConexao(cnx);
 
 			
 			tblCursos = new JTable(0,0);

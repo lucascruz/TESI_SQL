@@ -44,6 +44,8 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 
 		this.pai = pai;
 		this.cnx = cnx;
+		
+		centroLogic.setConexao(cnx);
 
 		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};
 

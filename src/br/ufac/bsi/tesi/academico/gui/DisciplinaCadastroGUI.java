@@ -47,6 +47,8 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 
 		this.pai = pai;
 		this.cnx = cnx;
+		
+		disciplinaLogic.setConexao(cnx);
 
 		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};
 

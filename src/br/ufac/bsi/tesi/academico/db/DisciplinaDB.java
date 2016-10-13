@@ -17,8 +17,8 @@ public class DisciplinaDB {
 	private Conexao conexao;
 	private ResultSet rs;
 
-	public void setConexao(Conexao conexao){
-		this.conexao = conexao;
+	public void setConexao(Conexao cnx){
+		this.conexao = cnx;
 	}
 
 	public boolean addDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{

@@ -49,6 +49,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 
 		centroGUI = new CentroCadastroGUI(this, cnx);		
 		centroLogic = new CentroLogic();
+		centroLogic.setConexao(cnx);
 		
 		tblCentros = new JTable(0,0);
 		tblCentros.setToolTipText("Lista de Centros!");		

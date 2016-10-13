@@ -20,14 +20,13 @@ import javax.swing.border.EmptyBorder;
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.gui.AcademicoGUI;
 
-@SuppressWarnings("serial")
 public class Tela_Login extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
 	private String usuario, senha;
-	private static Conexao cnx;
+	private static Conexao cnx = new Conexao();
 
 
 	public static void main(String[] args) {
@@ -92,7 +91,7 @@ public class Tela_Login extends JFrame {
 					senha = new String (pass);
 					System.out.println(usuario+senha);
 					if (cnx.conecte(usuario, senha)){
-						AcademicoGUI frame1 = new AcademicoGUI();
+						AcademicoGUI frame1 = new AcademicoGUI(cnx);
 						frame1.setVisible(true);
 						dispose();
 						System.out.println(cnx);}
@@ -110,9 +109,8 @@ public class Tela_Login extends JFrame {
 				senha = new String (pass);
 				System.out.println(usuario+senha);
 				if (cnx.conecte(usuario, senha)){
-					AcademicoGUI frame1 = new AcademicoGUI();
+					AcademicoGUI frame1 = new AcademicoGUI(cnx);
 					frame1.setVisible(true);
-					dispose();
 					System.out.println(cnx);
 				}
 			//	cnx.desconecte();

@@ -50,7 +50,9 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 
 		this.pai = pai;
 		this.cnx = cnx;
-
+		
+		professorLogic.setConexao(cnx);
+		centroLogic.setConexao(cnx);
 	
 
 		operacoesNomes = new String[]{"Inclusao", "Edicao", "Exclusao"};

@@ -14,10 +14,9 @@ import br.ufac.bsi.tesi.academico.logic.Centro;
 public class CentroDB {
 
 	private Conexao conexao;
-	private ResultSet rs; 
 
-	public void setConexao(Conexao conexao){
-		this.conexao = conexao;
+	public void setConexao(Conexao cnx){
+		this.conexao = cnx;
 	}
 
 	public boolean addCentro(Centro centro)throws SQLException, InvalidNameException, ParentHasChildrenException{
@@ -94,7 +93,7 @@ public class CentroDB {
 		String strConsultar = "SELECT sigla, nome FROM centro "
 				+ "WHERE sigla = '" + sigla + "';"; 
 
-		rs = conexao.consulte(strConsultar);
+		ResultSet rs = conexao.consulte(strConsultar);
 
 		if(rs != null){
 			try{ 
@@ -123,7 +122,7 @@ public class CentroDB {
 		String strConsultar = "SELECT sigla, nome"
 				+ " FROM centro;"; 
 
-		rs = conexao.consulte(strConsultar);
+		ResultSet rs = conexao.consulte(strConsultar);
 
 		if(rs != null){
 			try{ 

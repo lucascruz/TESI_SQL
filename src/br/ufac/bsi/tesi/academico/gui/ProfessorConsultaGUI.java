@@ -54,6 +54,7 @@ public class ProfessorConsultaGUI extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, e1.getMessage());	
 		}		
 		professorLogic = new ProfessorLogic();
+		professorLogic.setConexao(cnx);
 
 		tblProfessores = new JTable(0,0);
 		tblProfessores.setToolTipText("Lista de professores!");		

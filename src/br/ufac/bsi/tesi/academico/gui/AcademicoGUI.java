@@ -27,12 +27,14 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 	private Conexao cnx;
 
 
-	public AcademicoGUI() {
+	public AcademicoGUI(Conexao cnx) {
 		setTitle("Controle Academico");
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
 		setLocationRelativeTo(null);
-
+		
+		this.cnx = cnx;
+		
 		professorConsultaGUI = new ProfessorConsultaGUI(this, cnx);		
 		centroConsultaGUI = new CentroConsultaGUI(this,cnx);
 		cursoConsultaGUI = new CursoConsultaGUI(this,cnx);

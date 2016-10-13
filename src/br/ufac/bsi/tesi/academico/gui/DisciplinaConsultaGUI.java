@@ -48,6 +48,7 @@ public class DisciplinaConsultaGUI extends JFrame implements ActionListener{
 
 		disciplinaGUI = new DisciplinaCadastroGUI(this, cnx);		
 		disciplinaLogic = new DisciplinaLogic();
+		disciplinaLogic.setConexao(cnx);
 		
 		tblDisciplina = new JTable(0,0);
 		tblDisciplina.setToolTipText("Lista de Disciplinas!");		

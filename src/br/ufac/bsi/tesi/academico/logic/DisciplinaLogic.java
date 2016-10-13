@@ -14,10 +14,10 @@ import br.ufac.bsi.tesi.academico.exception.NumberErroException;
 import br.ufac.bsi.tesi.academico.exception.ParentHasChildrenException;
 
 public class DisciplinaLogic {
-	private DisciplinaDB cdb = new DisciplinaDB();
+	private DisciplinaDB discdb = new DisciplinaDB();
 
 	public void setConexao(Conexao conexao){
-		cdb.setConexao(conexao);
+		discdb.setConexao(conexao);
 	}
 	
 	public boolean addDisciplina(String nome, String codigo, String ch)throws InvalidFieldException , InvalidLenghtFieldException, NumberErroException, EntityAlreadyExistException, ParentHasChildrenException, SQLException, InvalidNameException{
@@ -68,7 +68,7 @@ public class DisciplinaLogic {
 			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!codigo.isEmpty())
-			disciplina = cdb.getDisciplina(codigo);
+			disciplina = discdb.getDisciplina(codigo);
 
 		if (disciplina != null){
 			entidadeJaExiste = entidadeJaExiste + "Matricula: "+disciplina.getCodigo()+"\nNome: "+disciplina.getNome();
@@ -77,7 +77,7 @@ public class DisciplinaLogic {
 		else{
 			disciplina = new Disciplina();
 			disciplina.setCodigo(codigo); disciplina.setNome(nome); disciplina.setCh(ch);
-			return cdb.addDisciplina(disciplina);
+			return discdb.addDisciplina(disciplina);
 		}
 	}
 	@SuppressWarnings("unused")
@@ -129,14 +129,14 @@ public class DisciplinaLogic {
 			throw new InvalidLenghtFieldException(camposInvalidosMax);
 
 		if (!codigo.isEmpty())
-			disciplina = cdb.getDisciplina(codigo);
+			disciplina = discdb.getDisciplina(codigo);
 
 		if (disciplina == null)
 			throw new EntityNotExistException(entidadeNaoExist);
 		else{
 			disciplina.setNome(nome);
 			disciplina.setCh(ch);
-			return cdb.updDisciplina(disciplina);
+			return discdb.updDisciplina(disciplina);
 		}
 
 	}
@@ -148,24 +148,24 @@ public class DisciplinaLogic {
 			return false;
 
 		if (!codigo.isEmpty())
-			disciplina = cdb.getDisciplina(codigo);
+			disciplina = discdb.getDisciplina(codigo);
 
 		if (disciplina == null)
 			throw new EntityNotExistException(entidadeNaoExist);
 		else
-			return cdb.delDisciplina(disciplina);
+			return discdb.delDisciplina(disciplina);
 	}
 
 	public Disciplina getDisciplina(String codigo) throws SQLException{
 		Disciplina disciplina = null;
 
 		if (!codigo.isEmpty())
-			disciplina = cdb.getDisciplina(codigo);
+			disciplina = discdb.getDisciplina(codigo);
 
 		return disciplina;
 	}
 
 	public List<Disciplina> getTodasDisciplinas() throws SQLException {
-		return cdb.getTodasDisciplinas();
+		return discdb.getTodasDisciplinas();
 	}		
 }

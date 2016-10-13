@@ -52,6 +52,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(null, e1.getMessage());	
 		}		
 		alunoLogic = new AlunoLogic();
+		alunoLogic.setConexao(cnx);
 
 		tblalunos = new JTable(0,0);
 		tblalunos.setToolTipText("Lista de Alunos!");		
