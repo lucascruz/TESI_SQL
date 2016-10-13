@@ -29,12 +29,7 @@ public class CursoLogic {
 		boolean falhaMax = false;
 		boolean falhaNumero = false;
 		
-		try {
-			int teste = Integer.parseInt(codigo);
-		} catch (NumberFormatException e) {
-			camposNumericosInvalidos = "Codigo Não pode ser letras!!";
-			falhaNumero = true;
-		}
+
 		if (codigo.isEmpty()){
 			camposInvalidos = camposInvalidos + "Codigo: Vazio!";
 			falha = true;
@@ -78,7 +73,7 @@ public class CursoLogic {
 
 	}
 
-	@SuppressWarnings("unused")
+
 	public boolean updCurso(String codigo, String nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Curso curso = null;
 		String camposInvalidos = "";
@@ -89,12 +84,7 @@ public class CursoLogic {
 		boolean falhaMax = false;
 		boolean falhaNumero = false;
 		
-		try {
-			int teste = Integer.parseInt(codigo);
-		} catch (NumberFormatException e) {
-			camposNumericosInvalidos = "Codigo Não pode ser letras!!";
-			falhaNumero = true;
-		}
+
 		if (codigo.isEmpty()){
 			camposInvalidos = camposInvalidos + "Codigo: Vazio!";
 			falha = true;

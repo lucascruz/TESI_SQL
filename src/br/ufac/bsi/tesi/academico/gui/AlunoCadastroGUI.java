@@ -35,10 +35,8 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	private JComboBox<Curso> cmbCurso;
 	private JTextField fldMatricula, fldNome, fldFone, fldCep, fldEndereco, fldSexo;
 	private JButton btnConfirmar, btnCancelar;
-
 	private String[] operacoesNomes;
 	private int operacao;
-
 	private AlunoConsultaGUI pai;
 	private Conexao cnx;
 

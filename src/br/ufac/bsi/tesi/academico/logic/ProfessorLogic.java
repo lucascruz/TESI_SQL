@@ -103,11 +103,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			//centro = centroLogic.getCentro(centro_sigla);
+			centro = centroLogic.getCentro(centro_sigla);
 			
-			//if (centro != null){
-			//	professor.setCentro(centro);
-			//}			
+			if (centro != null){
+				professor.setCentro(centro);
+			}			
 			
 			return pdb.addProfessor(professor);
 		}
@@ -194,11 +194,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			//centro = centroLogic.getCentro(centrosigla);
+			centro = centroLogic.getCentro(centrosigla);
 			
-			//if (centro != null){
-			//	professor.setCentro(centro);
-			//}			
+			if (centro != null){
+				professor.setCentro(centro);
+			}			
 			
 			return pdb.updProfessor(professor);
 		}
@@ -230,11 +230,11 @@ public class ProfessorLogic {
 			professor.setEndereco(endereco);
 			professor.setFone(fone);
 
-			//centro = centroLogic.getCentro(centro_sigla);
+			centro = centroLogic.getCentro(centro_sigla);
 			
-			//if (centro != null){
-			//	professor.setCentro(centro);
-			//}			
+			if (centro != null){
+				professor.setCentro(centro);
+			}			
 			
 			return pdb.delProfessor(professor);
 		}

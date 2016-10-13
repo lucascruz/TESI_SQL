@@ -23,18 +23,12 @@ public class AlunoLogic {
 	}
 	
 	public boolean addAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws InvalidFieldException, NumberErroException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Aluno aluno = null;
 		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "", entidadeJaExiste = "Aluno: ";
 		boolean falha = false, falhaNumero = false, falhaMax = false;
 		Curso curso = null;
 		
-		try {
-			int teste = Integer.parseInt(matricula);
-		} catch (NumberFormatException e) {
-			camposNumericosInvalidos = " Codigo Não pode ser letras!!\n";
-			falhaNumero = true;
-		}
 		
 		if (matricula.isEmpty()){
 			camposInvalidos = camposInvalidos + "Matricula Vazia\n ";
@@ -121,7 +115,7 @@ public class AlunoLogic {
 		}	
 		return adb.addAluno(aluno);
 	}
-	@SuppressWarnings("unused")
+
 	public boolean updAluno(String matricula, String nome, String fone, String endereco, 
 			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
 		Aluno aluno = null;
@@ -129,12 +123,6 @@ public class AlunoLogic {
 		boolean falha = false, falhaNumero = false, falhaMax = false;
 		Curso curso = null;
 		
-		try {
-			int teste = Integer.parseInt(matricula);
-		} catch (NumberFormatException e) {
-			camposNumericosInvalidos = " Codigo Não pode ser letras!!\n";
-			falhaNumero = true;
-		}
 		
 		if (matricula.isEmpty()){
 			camposInvalidos = camposInvalidos + "Matricula Vazia\n ";

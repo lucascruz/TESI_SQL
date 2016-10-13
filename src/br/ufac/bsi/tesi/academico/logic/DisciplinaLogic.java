@@ -38,12 +38,7 @@ public class DisciplinaLogic {
 			camposInvalidosMax  = camposInvalidosMax  + "Ch Ultrapassou o limite max de digitos (Limite max 3)\n";
 			falhaMax = true;
 		}
-		try {
-			int ch2 = Integer.parseInt(ch); //Na tabela codigo é varchar então eu n verifico se ele é numero tb
-		} catch (NumberFormatException e) {
-			camposNumericosInvalidos = camposNumericosInvalidos +" Ch Não pode ser letras!!";
-			falhaNumero = true;
-		}
+
 		if (codigo.isEmpty()){
 			camposInvalidos = camposInvalidos + " Codigo: Vazio!\n";
 			falha = true;
