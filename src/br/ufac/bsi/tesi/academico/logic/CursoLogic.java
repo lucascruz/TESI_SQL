@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.CursoDB;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -21,7 +22,7 @@ public class CursoLogic {
 	}
 	
 	
-	public boolean addCurso(String codigo, String nome)throws InvalidFieldException, NumberErroException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+	public boolean addCurso(String codigo, String nome)throws InvalidFieldException, NumberErroException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Curso curso = null;
 		String camposInvalidos = "", camposInvalidosMax = "",camposNumericosInvalidos = "";
 		String entidadeJaExiste = "Curso de: ";
@@ -50,7 +51,7 @@ public class CursoLogic {
 		}
 
 		if (falha)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, camposInvalidos);
 	
 		if (falhaNumero)
 			throw new NumberErroException(camposNumericosInvalidos);
@@ -74,7 +75,7 @@ public class CursoLogic {
 	}
 
 
-	public boolean updCurso(String codigo, String nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+	public boolean updCurso(String codigo, String nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		Curso curso = null;
 		String camposInvalidos = "";
 		String camposInvalidosMax = "";
@@ -105,7 +106,7 @@ public class CursoLogic {
 		}
 
 		if (falha)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, camposInvalidos);
 	
 		if (falhaNumero)
 		throw new NumberErroException(camposNumericosInvalidos);
@@ -125,7 +126,7 @@ public class CursoLogic {
 
 	}
 
-	public boolean delCurso(String nome, String codigo)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+	public boolean delCurso(String nome, String codigo)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		Curso curso = null;
 		String entidadeNaoExist = "Curso não existe no banco de dados";
 		if (nome.isEmpty() || codigo.isEmpty())
@@ -140,7 +141,7 @@ public class CursoLogic {
 			return cdb.delCurso(curso);
 	}
 
-	public Curso getCurso(String codigo) throws SQLException{
+	public Curso getCurso(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Curso curso = null;
 		
 		if (!codigo.isEmpty())
@@ -149,7 +150,7 @@ public class CursoLogic {
 		return curso;
 	}
 
-	public List<Curso> getTodosCursos() throws SQLException {
+	public List<Curso> getTodosCursos() throws SQLException, DataBaseNotConnectedException, EntityNotExistException {
 		return cdb.getTodosCursos();
 	}		
 }

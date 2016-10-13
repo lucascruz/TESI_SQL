@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
@@ -20,7 +21,7 @@ public class CursoDB {
 		this.conexao = conexao;
 	}
 
-	public boolean addCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException, DataBaseNotConnectedException{
 		int codigo = Integer.parseInt(curso.getCodigo());
 		String strIncluir = "INSERT INTO curso (codigo, nome) VALUES ('" + codigo 
 		+ "', '" + curso.getNome() +"');";	
@@ -43,7 +44,7 @@ public class CursoDB {
 		return false;
 	}
 	
-	public boolean updCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean updCurso(Curso curso) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strEditar = "UPDATE curso " + 
 				"SET nome = '" + curso.getNome() + "' " + 
 				"WHERE codigo = '" + curso.getCodigo() + "';";
@@ -66,7 +67,7 @@ public class CursoDB {
 		return false;
 	}
 	
-	public boolean delCurso(Curso curso)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean delCurso(Curso curso)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strExcluir = "DELETE FROM curso "
 				+ "WHERE codigo = '" + curso.getCodigo() + "';";
 		
@@ -88,7 +89,7 @@ public class CursoDB {
 		return false;
 	}
 	
-	public Curso getCurso(String codigo) throws SQLException{
+	public Curso getCurso(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 	
 		Curso curso = null;
 				
@@ -113,7 +114,7 @@ public class CursoDB {
 		}
 		return curso;
 	}
-	public List<Curso> getTodosCursos() throws SQLException {
+	public List<Curso> getTodosCursos() throws SQLException, DataBaseNotConnectedException, EntityNotExistException {
 		List<Curso> cursos = new ArrayList<Curso>();
 		Curso curso= null;
 

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
@@ -23,7 +24,7 @@ public class AlunoDB{
 		cdb.setConexao(conexao);
 	}
 
-	public boolean addAluno(Aluno aluno) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addAluno(Aluno aluno) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException, DataBaseNotConnectedException{
 		String strIncluir = "INSERT INTO aluno (matricula, nome, fone, endereco, cep, sexo, curso_codigo) VALUES ('" +
 				aluno.getMatricula() + "', '" + 
 				aluno.getNome() + "', '" + 
@@ -51,7 +52,7 @@ public class AlunoDB{
 		return false;
 	}
 
-	public boolean updAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean updAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strEditar = "UPDATE aluno " +
 				"SET nome = '" + aluno.getNome() + "', " + 
 				"    fone = '" + aluno.getFone() + "', " + 
@@ -79,7 +80,7 @@ public class AlunoDB{
 		return false;
 	}
 
-	public boolean delAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean delAluno(Aluno aluno)throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strExcluir = "DELETE FROM aluno "
 				+ "WHERE matricula = '" + aluno.getMatricula() + "';";
 
@@ -100,7 +101,7 @@ public class AlunoDB{
 		return false;
 	}
 
-	public Aluno getAluno(String matricula) throws SQLException{
+	public Aluno getAluno(String matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Aluno aluno = null;
 		Curso curso = null;
@@ -137,7 +138,7 @@ public class AlunoDB{
 		}
 		return aluno;
 	}
-	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException {
+	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException, DataBaseNotConnectedException, EntityNotExistException {
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		Curso curso = null;
 		Aluno aluno = null;

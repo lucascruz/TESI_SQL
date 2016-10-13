@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -87,7 +88,12 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e){
 
 		if (e.getSource() == btnConfirmar){
-			confirmar();
+			try {
+				confirmar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException | EntityAlreadyExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}	
 
 		if (e.getSource() == btnCancelar){
@@ -107,7 +113,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(String sigla) throws SQLException{
+	public void editar(String sigla) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Centro");
 
@@ -118,7 +124,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(String sigla) throws SQLException{
+	public void excluir(String sigla) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Centro");
 
@@ -130,7 +136,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String sigla) throws SQLException{
+	public void carregarCampos(String sigla) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Centro centro = centroLogic.getCentro(sigla);
 
@@ -143,7 +149,7 @@ public class CentroCadastroGUI extends JFrame implements ActionListener {
 		}
 	}
 
-	public void confirmar(){
+	public void confirmar() throws DataBaseNotConnectedException, EntityNotExistException, EntityAlreadyExistException{
 		boolean confirmado=true;
 
 		String sigla = fldSigla.getText();

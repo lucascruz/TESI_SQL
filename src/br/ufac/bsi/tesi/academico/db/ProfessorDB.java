@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
@@ -24,7 +25,7 @@ public class ProfessorDB {
 		cdb.setConexao(conexao);
 	}
 
-	public boolean addProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException, DataBaseNotConnectedException{
 		String strIncluir = "INSERT INTO professor (matricula, nome, rg, cpf, endereco, fone, centro_sigla) "
 				+ "VALUES (" +
 				+ professor.getMatricula() +", '" 
@@ -52,7 +53,7 @@ public class ProfessorDB {
 		}
 		return false;
 	}
-	public boolean updProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean updProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strEditar = "UPDATE professor "
 				+ "SET nome = '" + professor.getNome() +"', "
 				+ "    rg = '" + professor.getRg() + "', "
@@ -77,7 +78,7 @@ public class ProfessorDB {
 		
 		return false;
 	}
-	public boolean delProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean delProfessor(Professor professor)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strExcluir = "DELETE FROM professor "
 				+ "WHERE matricula = " + professor.getMatricula() + ";";
 		
@@ -99,7 +100,7 @@ public class ProfessorDB {
 		return false;
 	}
 	
-	public Professor getProfessor(int matricula) throws SQLException{
+	public Professor getProfessor(int matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 	
 		Professor professor = null;
 		Centro centro = null;
@@ -139,7 +140,7 @@ public class ProfessorDB {
 	}
 	
 
-	public Professor getProfessoresPorNome(String nome) throws SQLException{
+	public Professor getProfessoresPorNome(String nome) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Professor professor = null;
 		Centro centro = null;
 				
@@ -177,7 +178,7 @@ public class ProfessorDB {
 		return professor;
 	}
 
-	public List<Professor> getTodosProfessores() throws SQLException{
+	public List<Professor> getTodosProfessores() throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		List<Professor> professores = new ArrayList<Professor>();
 		Professor professor = null;

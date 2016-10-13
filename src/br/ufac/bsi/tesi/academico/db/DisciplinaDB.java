@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
@@ -21,7 +22,7 @@ public class DisciplinaDB {
 		this.conexao = cnx;
 	}
 
-	public boolean addDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException{
+	public boolean addDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityAlreadyExistException, DataBaseNotConnectedException{
 		String strIncluir = "INSERT INTO disciplina (codigo, nome, ch) VALUES ('" + disciplina.getCodigo()
 		 + "', '" + disciplina.getNome()+ "', '"+ disciplina.getCh() +"');";
 	
@@ -41,7 +42,7 @@ public class DisciplinaDB {
 		return false;
 	}
 	
-	public boolean updDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean updDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strEditar = "UPDATE disciplina " + "SET nome = '" + disciplina.getNome() +"' " + "SET ch = '" +
 				disciplina.getCh()+ "' " + "WHERE codigo = '" + disciplina.getCodigo() + "';";
 		
@@ -61,7 +62,7 @@ public class DisciplinaDB {
 		return false;
 	}
 	
-	public boolean delDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean delDisciplina(Disciplina disciplina)throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strExcluir = "DELETE FROM disciplina "
 				+ "WHERE codigo = '" + disciplina.getCodigo() + "';";
 		
@@ -83,7 +84,7 @@ public class DisciplinaDB {
 		return false;
 	}
 	
-	public Disciplina getDisciplina(String codigo) throws SQLException{
+	public Disciplina getDisciplina(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 	
 		Disciplina disciplina = null;
 				
@@ -109,7 +110,7 @@ public class DisciplinaDB {
 		}
 		return disciplina;
 	}
-	public List<Disciplina> getTodasDisciplinas() throws SQLException {
+	public List<Disciplina> getTodasDisciplinas() throws SQLException, DataBaseNotConnectedException, EntityNotExistException {
 		List<Disciplina> disciplinas = new ArrayList<Disciplina>(); 
 
 		ResultSet rs = conexao.consulte("SELECT * FROM disciplina;");

@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -44,7 +45,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	private ProfessorLogic professorLogic = new ProfessorLogic();
 	private CentroLogic centroLogic = new CentroLogic();	
 
-	public ProfessorCadastroGUI(ProfessorConsultaGUI pai, Conexao cnx) throws SQLException{ // mÃ©todo construtor
+	public ProfessorCadastroGUI(ProfessorConsultaGUI pai, Conexao cnx) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{ // mÃ©todo construtor
 		super(""); 				// chamando construtor da classe mÃ£e
 		setSize(600, 350);		// definindo dimensÃµes da janela	
 
@@ -115,6 +116,12 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 			}catch(NumberFormatException eee){
 				JOptionPane.showMessageDialog(null, "Campo RG,CPF E MATRICULA PRECISAM SER NUMEROS E NÃO PODEM FICAR VAZIO", 
 						"Cadastro de Professor", JOptionPane.PLAIN_MESSAGE);	
+			} catch (DataBaseNotConnectedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}	
 
@@ -145,7 +152,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(int matricula) throws SQLException{
+	public void editar(int matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Professor");
 
@@ -161,7 +168,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(int matricula) throws SQLException{
+	public void excluir(int matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Professor");
 
@@ -177,7 +184,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(int matricula) throws SQLException{
+	public void carregarCampos(int matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Professor professor = professorLogic.getProfessor(matricula);
 		Centro centro;
@@ -203,7 +210,7 @@ public class ProfessorCadastroGUI extends JFrame implements ActionListener {
 	}
 
 
-	public void confirmar()throws NumberFormatException{
+	public void confirmar()throws NumberFormatException, DataBaseNotConnectedException, EntityNotExistException{
 		Centro centro;
 		boolean confirmado=true;
 		matricula = Integer.parseInt(fldMatricula.getText());

@@ -45,7 +45,6 @@ public class AlunoTableModel extends AbstractTableModel {
 		
 	}
 
-	@Override
 	public Class<?> getColumnClass(int columnIndex) throws NullPointerException {
 		try{
 			getValueAt(0, columnIndex).getClass();

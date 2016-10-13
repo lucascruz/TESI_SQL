@@ -1,9 +1,8 @@
 package br.ufac.bsi.tesi.academico.exception;
 
-@SuppressWarnings("serial")
-public class EntityAlreadyExistException extends RuntimeException {
+public class EntityAlreadyExistException extends Exception {
 
 	public EntityAlreadyExistException(String entidade){
-		super("Entidade j� existe: " + entidade);
+		super("Entidade já existe: " + entidade);
 	}
 }

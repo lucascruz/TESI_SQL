@@ -21,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.logic.Centro;
 import br.ufac.bsi.tesi.academico.logic.CentroLogic;
 
@@ -118,7 +120,12 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		if (e.getSource() == btnBuscar){
-			buscar();
+			try {
+				buscar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		if (e.getSource() == btnIncluir){
@@ -126,23 +133,38 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		}
 		
 		if (e.getSource() == btnEditar){
-			editar();
+			try {
+				editar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		if (e.getSource() == btnExcluir){
-			excluir();
+			try {
+				excluir();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}		
 		
 		if (e.getSource() == btnSair){
 			sair();			
 		}
 		if(e.getSource() == btnListar){
-			Listar();
+			try {
+				Listar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 	}
 
-	public void Listar(){
+	public void Listar() throws DataBaseNotConnectedException, EntityNotExistException{
 		List<Centro> centros = new ArrayList<Centro>();
 		try {
 			centros = centroLogic.getTodosCentros();
@@ -160,7 +182,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
 	}
-	public void atualize(){
+	public void atualize() throws DataBaseNotConnectedException, EntityNotExistException{
 		List<Centro> centros = new ArrayList<Centro>();
 		try {
 			centros = centroLogic.getTodosCentros();
@@ -169,7 +191,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		}
 		tblCentros.setModel(new CentroTableModel(centros));
 	}
-	public void buscar(){
+	public void buscar() throws DataBaseNotConnectedException, EntityNotExistException{
 
 		List<Centro> centros = new ArrayList<Centro>();
 
@@ -194,7 +216,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		centroGUI.incluir();
 	}
 
-	public void editar(){
+	public void editar() throws DataBaseNotConnectedException, EntityNotExistException{
 		String sigla = (tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 0).toString());
 		
 		setVisible(false);
@@ -205,7 +227,7 @@ public class CentroConsultaGUI extends JFrame implements ActionListener{
 		}
 	}
 
-	public void excluir(){	
+	public void excluir() throws DataBaseNotConnectedException, EntityNotExistException{	
 		String sigla = (tblCentros.getModel().getValueAt(tblCentros.getSelectedRow(), 
 				0).toString());
 		

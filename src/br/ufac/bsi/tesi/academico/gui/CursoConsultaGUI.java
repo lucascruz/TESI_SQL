@@ -21,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.logic.Curso;
 import br.ufac.bsi.tesi.academico.logic.CursoLogic;
 
@@ -117,7 +119,12 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			
 			if (e.getSource() == btnBuscar){
-				buscar();
+				try {
+					buscar();
+				} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			if (e.getSource() == btnIncluir){
@@ -125,23 +132,38 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			}
 			
 			if (e.getSource() == btnEditar){
-				editar();
+				try {
+					editar();
+				} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			if (e.getSource() == btnExcluir){
-				excluir();
+				try {
+					excluir();
+				} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}		
 			
 			if (e.getSource() == btnSair){
 				sair();			
 			}
 			if(e.getSource() == btnListar){
-				Listar();
+				try {
+					Listar();
+				} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			
 		}
 
-		public void Listar(){
+		public void Listar() throws DataBaseNotConnectedException, EntityNotExistException{
 			List<Curso> cursos = new ArrayList<Curso>();
 			try {
 				cursos = cursoLogic.getTodosCursos();
@@ -160,7 +182,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			btnExcluir.setEnabled(false);
 		}
 		
-		public void atualize(){
+		public void atualize() throws DataBaseNotConnectedException, EntityNotExistException{
 			List<Curso> cursos = new ArrayList<Curso>();
 			try {
 				cursos = cursoLogic.getTodosCursos();
@@ -170,7 +192,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			tblCursos.setModel(new CursoTableModel(cursos));
 		}
 		@SuppressWarnings("unused")
-		public void buscar(){
+		public void buscar() throws DataBaseNotConnectedException, EntityNotExistException{
 
 			List<Curso> cursos = new ArrayList<Curso>();
 
@@ -211,7 +233,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			cursoGUI.incluir();
 		}
 
-		public void editar(){
+		public void editar() throws DataBaseNotConnectedException, EntityNotExistException{
 			String sigla = (tblCursos.getModel().getValueAt(tblCursos.getSelectedRow(),
 					0).toString());
 			
@@ -223,7 +245,7 @@ public class CursoConsultaGUI extends JFrame implements ActionListener{
 			}
 		}
 
-		public void excluir(){	
+		public void excluir() throws DataBaseNotConnectedException, EntityNotExistException{	
 			String sigla = (tblCursos.getModel().getValueAt(tblCursos.getSelectedRow(), 
 					0).toString());
 			

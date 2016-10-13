@@ -1,12 +1,8 @@
 package br.ufac.bsi.tesi.academico.exception;
 
-public class InvalidFieldException extends RuntimeException {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class InvalidFieldException extends Exception {
 
-	public InvalidFieldException(String fields){
-		super("Campos Vazios: \n" + fields);
+	public InvalidFieldException(String entidiade, String listaDeCampos){
+		super("Campos inválidos para entidade '" + entidiade + "': " + listaDeCampos);
 	}
 }

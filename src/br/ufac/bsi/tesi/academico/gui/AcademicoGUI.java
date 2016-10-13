@@ -12,6 +12,8 @@ import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 
 public class AcademicoGUI extends JFrame implements ActionListener{
 
@@ -27,7 +29,7 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 	private Conexao cnx;
 
 
-	public AcademicoGUI(Conexao cnx) {
+	public AcademicoGUI(Conexao cnx) throws DataBaseNotConnectedException, EntityNotExistException {
 		setTitle("Controle Academico");
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
@@ -89,7 +91,7 @@ public class AcademicoGUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == mntmSair){
 			try {
-				cnx.finalize();
+				cnx.desconecte();
 			} catch (Throwable e1) {
 				e1.printStackTrace();
 			}

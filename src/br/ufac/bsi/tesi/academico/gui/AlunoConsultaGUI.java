@@ -21,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
 import br.ufac.bsi.tesi.academico.logic.Aluno;
 import br.ufac.bsi.tesi.academico.logic.AlunoLogic;
@@ -38,7 +40,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 	private AlunoLogic alunoLogic;
 	private Conexao cnx;
 
-	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx){
+	public AlunoConsultaGUI(AcademicoGUI pai, Conexao cnx) throws DataBaseNotConnectedException, EntityNotExistException{
 		super("Consulta de Aluno");
 		setSize(800, 600); 
 		setLocationRelativeTo(null);		
@@ -121,7 +123,12 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		
 		if (e.getSource() == btnBuscar){
-			buscar();
+			try {
+				buscar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		if (e.getSource() == btnIncluir){
@@ -129,11 +136,21 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		}
 		
 		if (e.getSource() == btnEditar){
-			editar();
+			try {
+				editar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		if (e.getSource() == btnExcluir){
-			excluir();
+			try {
+				excluir();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}		
 		
 		if (e.getSource() == btnSair){
@@ -145,12 +162,18 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 			} catch (InvalidNameException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (DataBaseNotConnectedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 		
 	}
 
-	public void Listar() throws InvalidNameException{
+	public void Listar() throws InvalidNameException, DataBaseNotConnectedException, EntityNotExistException{
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		try {
 			alunos = alunoLogic.getTodosAlunos();
@@ -168,7 +191,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		btnEditar.setEnabled(false);
 		btnExcluir.setEnabled(false);
 	}
-	public void atualize() throws InvalidNameException{
+	public void atualize() throws InvalidNameException, DataBaseNotConnectedException, EntityNotExistException{
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		try {
 			alunos = alunoLogic.getTodosAlunos();
@@ -177,7 +200,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		}
 		tblalunos.setModel(new AlunoTableModel(alunos));
 	}
-	public void buscar(){
+	public void buscar() throws DataBaseNotConnectedException, EntityNotExistException{
 
 		List<Aluno> alunos = new ArrayList<Aluno>();
 		if (fldValor.getText().equals(""))
@@ -215,7 +238,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		pcgui.incluir();
 	}
 
-	public void editar(){	
+	public void editar() throws DataBaseNotConnectedException, EntityNotExistException{	
 		String matricula = (tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
 				0).toString());
 		
@@ -227,7 +250,7 @@ class AlunoConsultaGUI extends JFrame implements ActionListener{
 		}
 	}
 
-	public void excluir(){
+	public void excluir() throws DataBaseNotConnectedException, EntityNotExistException{
 		String matricula = (tblalunos.getModel().getValueAt(tblalunos.getSelectedRow(), 
 				0).toString());
 		

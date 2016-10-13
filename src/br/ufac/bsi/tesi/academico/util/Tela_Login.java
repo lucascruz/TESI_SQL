@@ -17,6 +17,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.AccessDeniedForUserException;
+import br.ufac.bsi.tesi.academico.exception.DataBaseGenericException;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
+import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.gui.AcademicoGUI;
 
 public class Tela_Login extends JFrame {
@@ -93,11 +97,22 @@ public class Tela_Login extends JFrame {
 					char [] pass = passwordField.getPassword();
 					senha = new String (pass);
 					System.out.println(usuario+senha);
-					if (cnx.conecte(usuario, senha)){
-						AcademicoGUI frame1 = new AcademicoGUI(cnx);
-						frame1.setVisible(true);
-						dispose();
-						System.out.println(cnx);}
+					try {
+						if (cnx.conecte(usuario, senha)){
+							AcademicoGUI frame1 = null;
+							try {
+								frame1 = new AcademicoGUI(cnx);
+							} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							frame1.setVisible(true);
+							dispose();
+							System.out.println(cnx);}
+					} catch (AccessDeniedForUserException | DataBaseGenericException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -111,10 +126,16 @@ public class Tela_Login extends JFrame {
 				char [] pass = passwordField.getPassword();
 				senha = new String (pass);
 				System.out.println(usuario+senha);
-				if (cnx.conecte(usuario, senha)){
-					AcademicoGUI frame1 = new AcademicoGUI(cnx);
-					frame1.setVisible(true);
-					System.out.println(cnx);
+				try {
+					if (cnx.conecte(usuario, senha)){
+						AcademicoGUI frame1 = new AcademicoGUI(cnx);
+						frame1.setVisible(true);
+						System.out.println(cnx);
+					}
+				} catch (AccessDeniedForUserException | DataBaseGenericException | DataBaseNotConnectedException
+						| EntityNotExistException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			//	cnx.desconecte();
 				System.out.println(cnx);
@@ -130,7 +151,7 @@ public class Tela_Login extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					cnx.finalize();
+					cnx.desconecte();
 				} catch (Throwable e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

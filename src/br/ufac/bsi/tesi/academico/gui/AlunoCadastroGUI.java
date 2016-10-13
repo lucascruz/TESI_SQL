@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -43,7 +44,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	private AlunoLogic alunoLogic = new AlunoLogic();
 	private CursoLogic cursoLogic = new CursoLogic();	
 
-	public AlunoCadastroGUI(AlunoConsultaGUI pai, Conexao cnx) throws SQLException{ 
+	public AlunoCadastroGUI(AlunoConsultaGUI pai, Conexao cnx) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{ 
 		super(""); 				
 		setSize(600, 350);	
 
@@ -115,6 +116,12 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 			} catch (InvalidNameException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} catch (DataBaseNotConnectedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}	
 
@@ -145,7 +152,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(String matricula) throws SQLException{
+	public void editar(String matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Aluno");
 
@@ -161,7 +168,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(String matricula) throws SQLException{
+	public void excluir(String matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Aluno");
 
@@ -177,7 +184,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String matricula) throws SQLException{
+	public void carregarCampos(String matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Aluno aluno = alunoLogic.getAluno(matricula);
 		Curso curso;
@@ -203,7 +210,7 @@ class AlunoCadastroGUI extends JFrame implements ActionListener {
 	}
 
 
-	public void confirmar() throws InvalidNameException{
+	public void confirmar() throws InvalidNameException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Curso curso;
 		boolean confirmado= true;

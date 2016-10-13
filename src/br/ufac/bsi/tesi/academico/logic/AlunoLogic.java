@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.AlunoDB;
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -23,7 +24,7 @@ public class AlunoLogic {
 	}
 	
 	public boolean addAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, EntityAlreadyExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Aluno aluno = null;
 		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "", entidadeJaExiste = "Aluno: ";
 		boolean falha = false, falhaNumero = false, falhaMax = false;
@@ -85,7 +86,7 @@ public class AlunoLogic {
 		}
 		
 		if (falha)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, entidadeJaExiste);
 		
 		if(falhaNumero)
 			throw new NumberErroException(camposNumericosInvalidos);
@@ -117,7 +118,7 @@ public class AlunoLogic {
 	}
 
 	public boolean updAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String cep, String sexo, String curso_nome)throws InvalidFieldException, InvalidLenghtFieldException, NumberErroException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		Aluno aluno = null;
 		String camposInvalidos = "", camposNumericosInvalidos = "", camposInvalidosMax = "",entidadeNaoExist = "Aluno não existe no banco de dados";
 		boolean falha = false, falhaNumero = false, falhaMax = false;
@@ -179,7 +180,7 @@ public class AlunoLogic {
 		}
 		
 		if (falha)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, entidadeNaoExist);
 		
 		if(falhaNumero)
 			throw new NumberErroException(camposNumericosInvalidos);
@@ -207,7 +208,7 @@ public class AlunoLogic {
 		return adb.updAluno(aluno);
 	}
 	public boolean delAluno(String matricula, String nome, String fone, String endereco, 
-			String cep, String sexo, String curso_nome)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String cep, String sexo, String curso_nome)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		Aluno aluno = null;
 		Curso curso = null;
 		String entidadeNaoExist = "Aluno não existe no banco de dados";
@@ -236,7 +237,7 @@ public class AlunoLogic {
 		}	
 		return adb.delAluno(aluno);
 	}
-	public Aluno getAluno(String matricula) throws SQLException{
+	public Aluno getAluno(String matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Aluno aluno = null;
 
 		if (!matricula.isEmpty())
@@ -244,7 +245,7 @@ public class AlunoLogic {
 
 		return aluno;
 	}
-	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException {
+	public List<Aluno> getTodosAlunos() throws SQLException, InvalidNameException, DataBaseNotConnectedException, EntityNotExistException {
 		return adb.getTodosAlunos();
 	}		
 }

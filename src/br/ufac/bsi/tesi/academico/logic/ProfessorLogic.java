@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
 import br.ufac.bsi.tesi.academico.db.ProfessorDB;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -22,7 +23,7 @@ public class ProfessorLogic {
 	}
 	
 	public boolean addProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centro_sigla)throws InvalidFieldException, InvalidLenghtFieldException, ParentHasChildrenException, EntityAlreadyExistException, InvalidNameException, SQLException{
+			String endereco, String fone, String centro_sigla)throws InvalidFieldException, InvalidLenghtFieldException, ParentHasChildrenException, EntityAlreadyExistException, InvalidNameException, SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Professor professor = null;
 		String camposInvalidos = "", camposInvalidosMax="", entidadeJaExiste = "Professor de: ";
 		boolean falhaVazio = false, falhaMax = false;
@@ -82,7 +83,7 @@ public class ProfessorLogic {
 		}
 		
 		if (falhaVazio)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, camposInvalidos);
 		
 		if(falhaMax)
 			throw new InvalidLenghtFieldException(camposInvalidosMax);
@@ -115,7 +116,7 @@ public class ProfessorLogic {
 	}
 
 	public boolean updProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centrosigla)throws InvalidFieldException, InvalidLenghtFieldException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String endereco, String fone, String centrosigla)throws InvalidFieldException, InvalidLenghtFieldException, EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		Professor professor = null;
 		String camposInvalidos = "", camposInvalidosMax="",entidadeNaoExist = "Professor não existe no banco de dados";
 		boolean falhaVazio = false, falhaMax = false;
@@ -175,7 +176,7 @@ public class ProfessorLogic {
 		}
 		
 		if (falhaVazio)
-			throw new InvalidFieldException(camposInvalidos);
+			throw new InvalidFieldException(camposInvalidos, camposInvalidos);
 		
 		if(falhaMax)
 			throw new InvalidLenghtFieldException(camposInvalidosMax);
@@ -205,7 +206,7 @@ public class ProfessorLogic {
 	}
 
 	public boolean delProfessor(int matricula, String nome, int rg, int cpf, 
-			String endereco, String fone, String centro_sigla)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException{
+			String endereco, String fone, String centro_sigla)throws EntityNotExistException, ParentHasChildrenException, InvalidNameException, SQLException, DataBaseNotConnectedException{
 		String entidadeNaoExist = "Professor não existe no banco de dados";
 		Professor professor = null;
 		Centro centro = null;
@@ -240,7 +241,7 @@ public class ProfessorLogic {
 		}
 	}
 
-	public Professor getProfessor(int matricula) throws SQLException{
+	public Professor getProfessor(int matricula) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Professor professor = null;
 		
 		if (matricula != 0)
@@ -248,11 +249,11 @@ public class ProfessorLogic {
 
 		return professor;
 	}	
-	public List<Professor> getTodosProfessores() throws SQLException{
+	public List<Professor> getTodosProfessores() throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		return pdb.getTodosProfessores();
 	}	
 	
-	public Professor getProfessorPorNome(String nome) throws SQLException{
+	public Professor getProfessorPorNome(String nome) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		Professor professor = null;
 		
 		if (!nome.isEmpty())

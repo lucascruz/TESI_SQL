@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import br.ufac.bsi.tesi.academico.exception.*;
+
 //Classe Conexao
 public class Conexao {
 	private static Connection con = null;
@@ -15,70 +17,75 @@ public class Conexao {
 	
 	
 	// Método para conectar-se ao banco
-	public boolean conecte(String userName, String userPasswd){
+	public boolean conecte(String userName, String userPasswd) 
+			throws AccessDeniedForUserException, DataBaseGenericException{
+		
 		try {
+			Class.forName("com.mysql.jdbc.Driver");			
 			con = DriverManager.getConnection(urlDB, userName, userPasswd);
-			conectado = true;
-		}catch(SQLException sqle){
-			conectado = false;
+			System.out.printf("Conexão com o banco efetuada!\n");
+			setConectado(true);			
+		} catch (SQLException sqle) {
+			setConectado(false);			
+			switch (sqle.getErrorCode()){
+			case 1045 :
+				throw new AccessDeniedForUserException(userName);
+			default :
+				throw new DataBaseGenericException(sqle.getErrorCode(), sqle.getMessage());
+
+			}
+		} catch (ClassNotFoundException e) {
+			throw new DataBaseGenericException(0, "Driver para o banco de dados não encontrado!");
 		}
-		return conectado;
+		return isConectado();
+
 	}
 
 	// Método para desconectar-se ao banco
-	public boolean desconecte() throws SQLException{
-		if (conectado){
+	public boolean desconecte() 
+			throws DataBaseNotConnectedException, DataBaseGenericException{
+		if (isConectado()){
 			try {
 				con.close();
 				System.out.printf("Conexão com o banco encerrada!\n");
-				conectado = false;
-			}catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
+				setConectado(false);				
+			} catch (SQLException sqle) {
+				throw new DataBaseGenericException(sqle.getErrorCode(), sqle.getMessage());
 			}
 		}else{
-			System.out.printf("Não conectado, impossível encerrar!");			
+			throw new DataBaseNotConnectedException("academico");				
 		}
+		return isConectado();
+	}
+
+	public ResultSet consulte(String strQuery) 
+			throws DataBaseNotConnectedException, SQLException{
+
+		if (isConectado()){
+			smt = con.createStatement();				
+			return  smt.executeQuery(strQuery);
+		}else{
+			throw new DataBaseNotConnectedException("academico");		
+		}
+
+	}
+
+	public int atualize(String sqlUpdate) 
+			throws DataBaseNotConnectedException, SQLException{
+
+		if (isConectado()){		
+			smt = con.createStatement();				
+			return  smt.executeUpdate(sqlUpdate);
+		}else{			
+			throw new DataBaseNotConnectedException("academico");			
+		}		
+	}
+
+	public boolean isConectado(){
 		return conectado;
 	}
-
-	public ResultSet consulte(String strQuery) throws SQLException{
-
-		if (conectado){
-			try{
-				smt = con.createStatement();				
-				return  smt.executeQuery(strQuery);
-			}catch(SQLException sqle){			
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());				
-			}
-		}else{
-			System.out.printf("Não conectado, impossível cosultar!");			
-		}
-		return null;
+	private void setConectado(boolean conectado){
+		this.conectado = conectado;
 	}
 
-	public int atualize(String sqlUpdate) throws SQLException{
-
-		if (conectado){		
-			try {
-				smt = con.createStatement();				
-				return smt.executeUpdate(sqlUpdate);
-			}catch(SQLException sqle){
-				System.out.printf("Erro: #%d [%s]\n", 
-						sqle.getErrorCode(), sqle.getMessage());
-			}
-		}else{
-			System.out.printf("Não conectado, impossível atualizar!");			
-		}		
-
-		return 0;
-	}
-
-	@Override
-	public void finalize() throws Throwable {
-		if (conectado) {
-			desconecte();
-		}
-	}     
 }//Fim da classe Conexao

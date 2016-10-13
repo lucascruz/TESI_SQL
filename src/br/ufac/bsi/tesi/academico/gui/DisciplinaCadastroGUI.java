@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import br.ufac.bsi.tesi.academico.db.Conexao;
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidFieldException;
@@ -93,7 +94,12 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e){
 
 		if (e.getSource() == btnConfirmar){
-			confirmar();
+			try {
+				confirmar();
+			} catch (DataBaseNotConnectedException | EntityNotExistException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}	
 
 		if (e.getSource() == btnCancelar){
@@ -115,7 +121,7 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void editar(String codigo) throws SQLException{
+	public void editar(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 1;		
 		setTitle(operacoesNomes[operacao]+ " de Disciplina");
 
@@ -127,7 +133,7 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void excluir(String codigo) throws SQLException{
+	public void excluir(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 		operacao = 2;		
 		setTitle(operacoesNomes[operacao]+ " de Disciplina");
 
@@ -139,7 +145,7 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 		setVisible(true);	
 	}
 
-	public void carregarCampos(String codigo) throws SQLException{
+	public void carregarCampos(String codigo) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Disciplina disciplina = disciplinaLogic.getDisciplina(codigo);
 
@@ -154,7 +160,7 @@ public class DisciplinaCadastroGUI extends JFrame implements ActionListener {
 		}
 	}
 
-	public void confirmar(){
+	public void confirmar() throws DataBaseNotConnectedException, EntityNotExistException{
 		boolean confirmado=true;
 		String codigo = fldCodigo.getText();
 		String nome = fldNome.getText();

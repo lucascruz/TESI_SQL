@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufac.bsi.tesi.academico.exception.DataBaseNotConnectedException;
 import br.ufac.bsi.tesi.academico.exception.EntityAlreadyExistException;
 import br.ufac.bsi.tesi.academico.exception.EntityNotExistException;
 import br.ufac.bsi.tesi.academico.exception.InvalidNameException;
@@ -19,7 +20,7 @@ public class CentroDB {
 		this.conexao = cnx;
 	}
 
-	public boolean addCentro(Centro centro)throws SQLException, InvalidNameException, ParentHasChildrenException{
+	public boolean addCentro(Centro centro)throws SQLException, InvalidNameException, ParentHasChildrenException, DataBaseNotConnectedException, EntityAlreadyExistException{
 		String strIncluir = "INSERT INTO centro (sigla, nome) VALUES (" +
 				"'" + centro.getSigla() +"', '" + centro.getNome() +"');";		
 
@@ -41,7 +42,7 @@ public class CentroDB {
 		return false;
 	}
 
-	public boolean updCentro(Centro centro) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean updCentro(Centro centro) throws SQLException,InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strEditar = "UPDATE centro "
 				+ "SET nome = '" + centro.getNome() +"' "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
@@ -64,7 +65,7 @@ public class CentroDB {
 		return false;
 	}
 
-	public boolean delCentro(Centro centro) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException{
+	public boolean delCentro(Centro centro) throws SQLException, InvalidNameException, ParentHasChildrenException, EntityNotExistException, DataBaseNotConnectedException{
 		String strExcluir = "DELETE FROM centro "
 				+ "WHERE sigla = '" + centro.getSigla() + "';";
 
@@ -86,7 +87,7 @@ public class CentroDB {
 		return false;
 	}
 
-	public Centro getCentro(String sigla) throws SQLException{
+	public Centro getCentro(String sigla) throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		Centro centro = null;
 
@@ -114,7 +115,7 @@ public class CentroDB {
 		return centro;
 	}
 
-	public List<Centro> getTodosCentros() throws SQLException{
+	public List<Centro> getTodosCentros() throws SQLException, DataBaseNotConnectedException, EntityNotExistException{
 
 		List<Centro> centros = new ArrayList<Centro>();
 		Centro centro = null;
